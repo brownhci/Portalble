@@ -63,6 +63,7 @@ public class LeftHandBoneCopying : MonoBehaviour {
                 m_targetFingers[counter++] = tmp.GetChild(2);
             }
         }
+        HandSize = GlobalStates.globalConfigFile.MeshHandScale;
     }
 
     // Update is called once per frame
@@ -91,6 +92,7 @@ public class LeftHandBoneCopying : MonoBehaviour {
         }*/
         
         if (m_available) {
+
             // Palm
             Quaternion palmRot = Quaternion.Euler(0f, 0f, -90f) * Quaternion.Euler(90f, 0f, 0f);
             m_selfFingers[0].position = m_targetFingers[0].position;

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 //using GoogleARCore.Examples.Common;
 
 public class UIController : MonoBehaviour {
+    public Portalble.PortalbleGeneralController m_PortalbleController;
 
 	public GameObject m_GCPAwake;
 	public GameObject m_GCP;
@@ -21,6 +22,12 @@ public class UIController : MonoBehaviour {
 
     //planes
     private GameObject[] m_planes;
+
+    void Start() {
+        if (m_PortalbleController == null) {
+            m_PortalbleController = FindObjectOfType<Portalble.PortalbleGeneralController>();
+        }
+    }
 
     public void toggleStartEnd() {
         m_start_show = !m_start_show;
@@ -133,6 +140,30 @@ public class UIController : MonoBehaviour {
         }
         else {
             button.color = Color.white;
+        }
+    }
+
+    public void ToggleARPlaneVisibility() {
+        if (m_PortalbleController != null) {
+            m_PortalbleController.planeVisibility = !m_PortalbleController.planeVisibility;
+        }
+    }
+
+    public void ToggleVibration() {
+        if (m_PortalbleController != null) {
+            m_PortalbleController.UseVibration = !m_PortalbleController.UseVibration;
+        }
+    }
+
+    public void ToggleGrabHighLight() {
+        if (m_PortalbleController != null) {
+            m_PortalbleController.GrabHighLight = !m_PortalbleController.GrabHighLight;
+        }
+    }
+
+    public void ToggleHandAction() {
+        if (m_PortalbleController != null) {
+            m_PortalbleController.HandActionRecogEnabled = !m_PortalbleController.HandActionRecogEnabled;
         }
     }
 }

@@ -8,8 +8,8 @@ public class DataManager : MonoBehaviour {
     private Vector3 hand_l_position;
 	private bool hand_l_busy, hand_r_busy;
 	private GameObject hand_l_obj, hand_r_obj;
-	public int gestBuffer = 25;
-	public int unCollidingBuffer = 30;
+	public int gestBuffer = 3;
+	public int unCollidingBuffer = 1;
 	public bool useFingerBuffer = true;
 	public int handThrowingPowerMultiplier = 20;
 	public float palm_collider_delay = 1.0f;

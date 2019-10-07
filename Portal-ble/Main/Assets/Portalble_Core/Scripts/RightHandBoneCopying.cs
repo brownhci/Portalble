@@ -60,6 +60,7 @@ public class RightHandBoneCopying : MonoBehaviour {
                 m_targetFingers[counter++] = tmp.GetChild(2);
             }
         }
+        HandSize = GlobalStates.globalConfigFile.MeshHandScale;
     }
 
     // Update is called once per frame

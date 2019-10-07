@@ -5,6 +5,32 @@ using System.IO;
 
 namespace Portalble {
     /// <summary>
+    /// Config Definition. Used in file PortalbleConfigDefinition.cs
+    /// </summary>
+    public class PortalbleConfigDefinition {
+        public PortalbleConfigDefinition(string k, System.Object default_v, System.Type t) {
+            key = k;
+            default_value = default_v;
+            type = t;
+        }
+
+        public string key;
+        public System.Object default_value;
+        public System.Type type;
+    }
+
+    public class PortalbleConfigEntry {
+        public PortalbleConfigEntry() { }
+        public PortalbleConfigEntry(System.Object v, System.Type t) {
+            value = v;
+            type = t;
+        }
+
+        public System.Object value;
+        public System.Type type;
+    }
+
+    /// <summary>
     /// Provided calibration function for Portalble
     /// </summary>
     public class PortalbleConfig {
@@ -12,18 +38,34 @@ namespace Portalble {
         private int m_version = 0;
 
         private Vector3 m_HandOffset;
-        private float m_MeshHandScale;
+        private float m_MeshHandScale = 1.0f;
         private float m_nearDis;
         private float m_farDis;
 
         private bool m_isAvailable;
         private bool m_useKalman;
+
+        private Dictionary<string, PortalbleConfigEntry> m_data;
+       
+        
         /// <summary>
         /// Constructor
         /// </summary>
         public PortalbleConfig() {
             m_isAvailable = false;
             ReadConfig();
+        }
+
+        /// <summary>
+        /// get or set config file name.
+        /// </summary>
+        public string FileName {
+            get {
+                return m_ConfigFileName;
+            }
+            set {
+                m_ConfigFileName = value;
+            }
         }
 
         /// <summary>
@@ -100,6 +142,65 @@ namespace Portalble {
         }
 
         /// <summary>
+        /// Set the config file to default
+        /// </summary>
+        public void SetToDefault() {
+            m_data = new Dictionary<string, PortalbleConfigEntry>();
+
+            foreach (PortalbleConfigDefinition def in PortalbleConfigItems.list) {
+                m_data[def.key] = new PortalbleConfigEntry();
+                m_data[def.key].value = def.default_value;
+                m_data[def.key].type = def.type;
+            }
+        }
+
+        /// <summary>
+        /// Try to get config value
+        /// </summary>
+        /// <typeparam name="T">The config entry data type</typeparam>
+        /// <param name="key">The entry key</param>
+        /// <returns></returns>
+        public T get<T>(string key) {
+            if (m_data.ContainsKey(key)) {
+                if (m_data[key].type != typeof(T)) {
+                    Debug.LogError("Trying to get config entry with key:" + key + " as type " + typeof(T) +
+                        " but the expected type is " + m_data[key].type + ". So a default is returned");
+                    return default(T);
+                }
+                else {
+                    return (T)m_data[key].value;
+                }
+            }
+            else {
+                Debug.LogError("Trying to get an inexistant config entry with key:" + key + 
+                    ", a default is returned");
+                return default(T);
+            }
+        }
+
+        /// <summary>
+        /// Set value to an entry
+        /// </summary>
+        /// <typeparam name="T">The datatype of the entry</typeparam>
+        /// <param name="key">The entry's key</param>
+        /// <param name="value">Value to be set</param>
+        public void set<T>(string key, T value) {
+            if (m_data.ContainsKey(key)) {
+                if (m_data[key].type != typeof(T)) {
+                    Debug.LogError("Trying to set the value of the config entry:" + key +
+                    " where the data type " + m_data[key].type + " is expected but type:" + typeof(T) + " is provided.");
+                    return;
+                }
+                m_data[key].value = value;
+            }
+            else {
+                Debug.LogError("Trying to set the value of an inexistant config entry:" + key +
+                    ", if you want to add a new config entry, please hardcode it in file PortalbleConfigDefinition.cs");
+                return;
+            }
+        }
+
+        /// <summary>
         /// Get config file path
         /// </summary>
         /// <returns>Config file path</returns>
@@ -145,10 +246,12 @@ namespace Portalble {
                         m_farDis = m_nearDis + 1f;
 
                     m_isAvailable = true;
+                    Debug.Log("reading config succeed!");
                     return true;
                 }
             }
             catch (System.Exception ex) {
+                Debug.Log("reading config has error:" + ex);
                 return false;
             }
         }
@@ -175,6 +278,7 @@ namespace Portalble {
                     // Near and Far size factor
                     sw.WriteLine(m_nearDis);
                     sw.WriteLine(m_farDis);
+                    Debug.Log("write config file successed.");
                     return true;
                 }
             }
@@ -188,13 +292,7 @@ namespace Portalble {
         /// </summary>
         /// <returns>true for exist, false for not exist</returns>
         public bool IsConfigFileExist() {
-            string config_path;
-            if (Application.isMobilePlatform) {
-                config_path = Path.Combine(Application.persistentDataPath, m_ConfigFileName);
-            }
-            else {
-                config_path = Path.Combine(Application.streamingAssetsPath, m_ConfigFileName);
-            }
+            string config_path = GetFilePath();
 
             return File.Exists(config_path);
         }

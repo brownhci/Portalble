@@ -206,4 +206,13 @@ public class HandActionRecog : MonoBehaviour {
     public void SetEnabled (bool e) {
         isEnabled = e;
     }
+
+    public bool SystemEnabled {
+        get {
+            return isEnabled;
+        }
+        set {
+            SetEnabled(value);
+        }
+    }
 }

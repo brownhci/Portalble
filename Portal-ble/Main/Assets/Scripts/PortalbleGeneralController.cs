@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.XR.ARFoundation;
+using Portalble.Functions.Grab;
 
 
 namespace Portalble
@@ -47,7 +49,7 @@ namespace Portalble
         /// <summary>
         /// Wether enable plane generator. Plane Visualizer must be set.
         /// </summary>
-        public bool m_EnablePlaneGenerator;
+        /// public bool m_EnablePlaneGenerator;
 
         /// <summary>
         /// Wether enable hand distance warning system.
@@ -57,7 +59,7 @@ namespace Portalble
         /// <summary>
         /// A prefab for tracking and visualizing detected planes. If PlaneGenerator is disabled, this field is ignored.
         /// </summary>
-        public GameObject m_DetectedPlanePrefab;
+        // public GameObject m_DetectedPlanePrefab;
 
         /// <summary>
         /// AR Support class
@@ -74,7 +76,7 @@ namespace Portalble
         /// A list to hold new planes ARCore began tracking in the current frame. This object is used across
         /// the application to avoid per-frame allocations.
         /// </summary>
-        protected List<PortalbleARPlane> m_NewPlanes = new List<PortalbleARPlane>();
+        /// protected List<PortalbleARPlane> m_NewPlanes = new List<PortalbleARPlane>();
 
         /// <summary>
         /// True if the app is in the process of quitting due to an ARCore connection error, otherwise false.
@@ -101,7 +103,25 @@ namespace Portalble
         /// </summary>
         protected GameObject m_RedScreenInstance;
 
+        /// <summary>
+        /// Websocket Manager
+        /// </summary>
         protected WSManager m_WSManager;
+
+        /// <summary>
+        /// Transparent material for planes
+        /// </summary>
+        public Material m_planeTransparentMaterial;
+
+        /// <summary>
+        /// The material of ar planes
+        /// </summary>
+        protected Material m_ARPlaneMaterial;
+
+        /// <summary>
+        /// if the plane is visible.
+        /// </summary>
+        private bool m_isPlaneVisible = true;
 
         // Use this for initialization
         protected virtual void Start()
@@ -120,22 +140,19 @@ namespace Portalble
             // If Interaction with ARCore planes is available.
             if (m_EnableARPlaneInteraction)
             {
-                if (Input.touchCount > 0)
+                Touch touch = Input.GetTouch(0);
+                // if current touch is valid. (notice: here is a ! mark before the logic)
+                if (!(Input.touchCount < 1 || touch.phase != TouchPhase.Began))
                 {
-                    Touch touch = Input.GetTouch(0);
-                    // if current touch is valid. (notice: here is a ! mark before the logic)
-                    if (!(Input.touchCount < 1 || touch.phase != TouchPhase.Began))
+                    // if hitting on a gui button, then don't do any interaction.
+                    /* condition only passes when no gui is hit */
+                    if (EventSystem.current == null || !(EventSystem.current.IsPointerOverGameObject()
+                        || EventSystem.current.currentSelectedGameObject != null))
                     {
-                        // if hitting on a gui button, then don't do any interaction.
-                        /* condition only passes when no gui is hit */
-                        if (EventSystem.current == null || !(EventSystem.current.IsPointerOverGameObject()
-                            || EventSystem.current.currentSelectedGameObject != null))
+                        List<PortalbleHitResult> hits = new List<PortalbleHitResult>();
+                        if (m_ARSupport.Raycast(touch.position, hits))
                         {
-                            List<PortalbleHitResult> hits = new List<PortalbleHitResult>();
-                            if (m_ARSupport.Raycast(touch.position, hits))
-                            {
-                                OnARPlaneHit(hits[0]);
-                            }
+                            OnARPlaneHit(hits[0]);
                         }
                     }
                 }
@@ -147,21 +164,18 @@ namespace Portalble
                 if (m_FirstPersonCamera)
                 {
                     Touch touch;
-                    if (Input.touchCount > 0)
+                    // If current touch is valid. (Notice: Here is a ! mark before the logic)
+                    if (!(Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began))
                     {
-                        // If current touch is valid. (Notice: Here is a ! mark before the logic)
-                        if (!(Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began))
+                        // If hitting on a gui button, then don't do any interaction.
+                        if (EventSystem.current == null || !(EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject != null))
                         {
-                            // If hitting on a gui button, then don't do any interaction.
-                            if (EventSystem.current == null || !(EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject != null))
+                            Ray ray = m_FirstPersonCamera.ScreenPointToRay(touch.position);
+                            RaycastHit hit;
+                            if (Physics.Raycast(ray, out hit, 9999f, 0x0fffffff))
                             {
-                                Ray ray = m_FirstPersonCamera.ScreenPointToRay(touch.position);
-                                RaycastHit hit;
-                                if (Physics.Raycast(ray, out hit, 9999f, 0x0fffffff))
-                                {
-                                    if (hit.transform.GetComponent<UnityEngine.XR.ARFoundation.ARPlane>() != null)
-                                        OnUnityPlaneHit(hit);
-                                }
+                                if (hit.transform.GetComponent<UnityEngine.XR.ARFoundation.ARPlane>() != null)
+                                    OnUnityPlaneHit(hit);
                             }
                         }
                     }
@@ -418,6 +432,118 @@ namespace Portalble
                     Debug.Log("Distance Too close");
                     text.text = "Too Close";
                 }
+            }
+        }
+
+        /// <summary>
+        /// Set ar scanned plane visibility
+        /// </summary>
+        /// <param name="visibility">true for visible, false for invisible.</param>
+        public void setPlaneVisible(bool visibility) {
+            if (m_isPlaneVisible == visibility)
+                return;
+
+            // Find the prefab
+            ARPlaneManager arpm = FindObjectOfType<ARPlaneManager>();
+            if (arpm != null) {
+                Renderer prefabRenderer = arpm.planePrefab.GetComponent<Renderer>();
+                if (prefabRenderer == null)
+                    return;
+                if (visibility == false) {
+                    // need to remember the old material
+                    m_ARPlaneMaterial = prefabRenderer.material;
+                    prefabRenderer.material = m_planeTransparentMaterial;
+                }
+                else {
+                    prefabRenderer.material = m_ARPlaneMaterial;
+                }
+
+                ARPlane[] planes = FindObjectsOfType<ARPlane>();
+                foreach (ARPlane plane in planes) {
+                    Renderer render = plane.GetComponent<Renderer>();
+                    // no renderer, no need to update
+                    if (render == null) {
+                        continue;
+                    }
+
+                    if (visibility == true) {
+                        render.material = m_ARPlaneMaterial;
+                    }
+                    else {
+                        render.material = m_planeTransparentMaterial;
+                    }
+                }
+
+                m_isPlaneVisible = visibility;
+            }
+        }
+
+        /// <summary>
+        /// The visibility of ar scanned plane.
+        /// </summary>
+        public bool planeVisibility {
+            get {
+                return m_isPlaneVisible;
+            }
+            set {
+                setPlaneVisible(value);
+            }
+        }
+
+        /// <summary>
+        /// Set vibration
+        /// </summary>
+        /// <param name="f"></param>
+        public void setVibration(bool f) {
+            Grab.Instance.UseVibration = f;
+        }
+
+        /// <summary>
+        /// Vibration
+        /// </summary>
+        public bool UseVibration {
+            get {
+                return Grab.Instance.UseVibration;
+            }
+            set {
+                setVibration(value);
+            }
+        }
+
+        /// <summary>
+        /// Set if grab system use highlight
+        /// </summary>
+        /// <param name="f">true for using, false for not.</param>
+        public void SetGrabHighLight(bool f) {
+            Grab.Instance.UseMaterialChange = f;
+        }
+
+        /// <summary>
+        /// Set and get for grab highlight switch.
+        /// </summary>
+        public bool GrabHighLight {
+            get {
+                return Grab.Instance.UseMaterialChange;
+            }
+            set {
+                SetGrabHighLight(value);
+            }
+        }
+
+        /// <summary>
+        /// Set hand action enabled
+        /// </summary>
+        /// <param name="e">true for enabled, false for not</param>
+        public void SetActionRecogEnabled(bool e) {
+            HandActionRecog.getInstance().SetEnabled(e);
+        }
+
+        public bool HandActionRecogEnabled {
+            get {
+                return HandActionRecog.getInstance().SystemEnabled;
+            }
+            set {
+                HandActionRecog.getInstance().SystemEnabled = value;
             }
         }
     }

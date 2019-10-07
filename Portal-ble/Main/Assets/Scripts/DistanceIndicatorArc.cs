@@ -12,6 +12,7 @@ namespace Portalble {
         public LineRenderer distanceLine;
         public Slider arcSlider;
         private Image sliderColor;
+
         protected override void Start() {
             base.Start();
             scaleFactor = 0.01f;
@@ -31,14 +32,14 @@ namespace Portalble {
             if (trackingObject != null) {
                 // Debug.Log("tracking:" + trackingObject.position + "&" + handLT.position);
                 float minDis = 99999f;
-                float arcDis = (trackingObject.position - cam.transform.position).magnitude;
+                // float arcDis = (trackingObject.position - cam.transform.position).magnitude;
 
                 bool isLeftNear = true;
                 if (handLT != null) {
-                    minDis = (trackingObject.position - cam.transform.position).magnitude;
+                    minDis = (trackingObject.position - handLT.position).magnitude;
                 }
                 if (handRT != null) {
-                    float tmpDis = (trackingObject.position - cam.transform.position).magnitude;
+                    float tmpDis = (trackingObject.position - handRT.position).magnitude;
                     // Same logic, since if handLT doesn't exist, minDis is -1, where tmpDis is impossible to be negative
                     if (tmpDis < minDis) {
                         minDis = tmpDis;
@@ -51,12 +52,12 @@ namespace Portalble {
 
                 // Debug.Log(minDis);
                 minDis *= 1000f;
-                arcDis *= 1000f;
+                // arcDis *= 1000f;
 
                 // Set Arc
                 float maxDis = arcSlider.maxValue;
                 float upperbound = 0.95f * maxDis;
-                float currentValue = Mathf.Clamp(arcDis, 0f, upperbound);
+                float currentValue = Mathf.Clamp(minDis, 0f, upperbound);
 
                 // Calculate Rotation degrees
                 float degree = (1f - currentValue / maxDis) * 180f;
@@ -66,7 +67,10 @@ namespace Portalble {
                 //Debug.Log(handLT);
                 //Debug.Log(handRT);
                 /* current min is 120, max is 1200 */
+                arcSlider.value = maxDis - currentValue;
+                // TODO, let Jing design the color...
                 sliderColor.color = MapColor(arcSlider.value, sliderColor.color, MapTransparency(arcSlider.value, 0, 4800));
+
                 // Draw lines
                 distanceLine.positionCount = 2;
                 distanceLine.SetPosition(0, trackingObject.position);

@@ -113,6 +113,7 @@ public class Sync : MonoBehaviour {
 
 
         //check
+        Debug.Log("Sync check hand." + GlobalStates.globalConfigFile.Available);
         if (GlobalStates.globalConfigFile.Available)
             initialLeapMotionOffset = GlobalStates.globalConfigFile.HandOffset;
         else

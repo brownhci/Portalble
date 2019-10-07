@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
 //using Input = GoogleARCore.InstantPreviewInput;
@@ -20,6 +21,10 @@ namespace Portalble {
         public Sync m_rightHandSync;
         public LeftHandBoneCopying m_leftHandBC;
         public RightHandBoneCopying m_rightHandBC;
+        public Transform m_leftHandPalm;
+        public Transform m_rightHandPalm;
+
+        public string m_nextSceneName;
 
         private int m_Stage;
 #if UNITY_EDITOR
@@ -84,24 +89,57 @@ namespace Portalble {
         }
 
         public void S1_OK_OnHit() {
-            float dis = Vector3.Distance(m_leftHandBC.transform.position, Camera.main.transform.position);
-            GlobalStates.globalConfigFile.NearLeapOutboundDistance = dis;
-            m_Stage = 2;
-            m_Stage2.gameObject.SetActive(false);
-            m_Stage3.gameObject.SetActive(true);
+            WSManager ws = FindObjectOfType<WSManager>();
+            if (ws != null) {
+                string active_hand = ws.getActiveHand();
+                float dis = -1.0f;
+                if (active_hand == "LEFT_HAND") {
+                    dis = Vector3.Distance(m_leftHandPalm.position, Camera.main.transform.position);
+                }
+                else if (active_hand == "RIGHT_HAND") {
+                    dis = Vector3.Distance(m_rightHandPalm.position, Camera.main.transform.position);
+                }
+
+                Debug.Log("near dis:" + dis);
+                if (dis >= 0f) {
+                    GlobalStates.globalConfigFile.NearLeapOutboundDistance = dis;
+                    m_Stage = 2;
+                    m_Stage2.gameObject.SetActive(false);
+                    m_Stage3.gameObject.SetActive(true);
+                }
+            }
         }
 
         public void S2_OK_OnHit() {
-            float dis = Vector3.Distance(m_leftHandBC.transform.position, Camera.main.transform.position);
-            GlobalStates.globalConfigFile.FarLeapOutboundDistance = dis;
-            m_Stage = 3;
-            m_Stage3.gameObject.SetActive(false);
-            OnFinished();
+            WSManager ws = FindObjectOfType<WSManager>();
+            if (ws != null) {
+                string active_hand = ws.getActiveHand();
+                float dis = -1.0f;
+                if (active_hand == "LEFT_HAND") {
+                    dis = Vector3.Distance(m_leftHandPalm.position, Camera.main.transform.position);
+                }
+                else if (active_hand == "RIGHT_HAND") {
+                    dis = Vector3.Distance(m_rightHandPalm.position, Camera.main.transform.position);
+                }
+
+                if (dis > GlobalStates.globalConfigFile.NearLeapOutboundDistance) {
+                    GlobalStates.globalConfigFile.FarLeapOutboundDistance = dis;
+                    m_Stage = 3;
+                    m_Stage3.gameObject.SetActive(false);
+                    OnFinished();
+                }
+            }
         }
 
         private void OnFinished() {
             GlobalStates.globalConfigFile.SaveConfig();
+            SceneManager.LoadScene(m_nextSceneName);
+           
             Debug.Log("Config Saved");
+        }
+
+        public void OnSkip() {
+            SceneManager.LoadScene(m_nextSceneName);
         }
     }
 }

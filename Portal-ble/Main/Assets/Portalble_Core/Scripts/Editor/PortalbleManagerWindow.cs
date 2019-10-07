@@ -160,6 +160,8 @@ namespace Portalble {
 
         private const string outlineMaterialPath = "Assets/Materials/OutlineEffect/OutlineEffect/VerticesOutline.mat";
 
+        private const string transparentMaterialPath = "Assets/Materials/TransparentARGrid.mat";
+
         /// <summary>
         /// New support. Unity XR
         /// </summary>
@@ -182,11 +184,11 @@ namespace Portalble {
             //        testRet = true;
             //}
 
-
+            /*
             if (testRet)
                 GUILayout.Label("GoogleARCore: √");
             else
-                GUILayout.Label("GoogleARCore: x");
+                GUILayout.Label("GoogleARCore: x");*/
 
             //------------------------------------------------------------------------------
             // Check Portalble Controller
@@ -310,13 +312,19 @@ namespace Portalble {
 
             generalController.m_ARSupport = GameObject.FindObjectOfType<PortalbleARSupport>();
 
+            if (generalController.m_ARSupport != null) {
+                generalController.m_FirstPersonCamera = generalController.m_ARSupport.GetComponentInChildren<Camera>();
+            }
+
+            generalController.m_planeTransparentMaterial = AssetDatabase.LoadAssetAtPath(transparentMaterialPath, typeof(Material)) as Material;
+
             /* update commented session */
             //generalController.m_RedScreen = AssetDatabase.LoadAssetAtPath(defaultPortalblePrefabPath
-                //+ "PortalbleUI.prefab", typeof(GameObject)) as GameObject;
+            //+ "PortalbleUI.prefab", typeof(GameObject)) as GameObject;
 
             /* update commented session */
             //GoogleARCore.ARCoreBackgroundRenderer arbr =
-                //GameObject.FindObjectOfType<GoogleARCore.ARCoreBackgroundRenderer>();
+            //GameObject.FindObjectOfType<GoogleARCore.ARCoreBackgroundRenderer>();
 
             /* update commented session */
             //if (arbr != null && arbr.GetComponent<Camera>() != null) {
@@ -328,7 +336,7 @@ namespace Portalble {
         /// Add UI for user study
         /// </summary>
         void AddExperimentalFunctionUI() {
-
+            InstantiatePrefabAtPath(System.IO.Path.Combine(defaultPortalblePrefabPath, "defaultUI.prefab"));
         }
 
         /// <summary>
