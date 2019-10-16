@@ -2,7 +2,7 @@
 Welcome to Portal-ble! This system allows you to directly manipulate virtual objects in a smartphone augmented reality (AR)
 environment with your bare hands. Current master branch is for Android only. Please see iOS branch for updates and schedules.
 
-**Important: This branch is Android only, your android version should be at least > 7.0 (Oreo) with latest ARCore installed** 
+**Important: This branch is Android only, your android version should be at least > 7.0 (Nougat) with latest ARCore installed** 
 
 Website: https://portalble.cs.brown.edu
 
