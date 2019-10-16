@@ -24,6 +24,8 @@ ARKit XR Plugin 2.1.1
 Examples/Grab/BasicGrab.unity
 
 # Building for Android:
+[Pre-flight] - Check you have installed the Android Studio and Leap Motion Orion 4.0
+
 [Step 0] - Make sure your **smartphone** and **windows pc** are under the **same** network
 
 [Step 1 -  Unity Configuration](https://youtu.be/JmuZOQ3fii4 "Step 1 -  Unity Configuration")
