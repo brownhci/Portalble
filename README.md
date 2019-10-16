@@ -4,10 +4,13 @@ environment with your bare hands. Current master branch is for Android only. Ple
 
 Website: https://portalble.cs.brown.edu
 
-#Developing Environment Requirements:
+# Developing Environment Requirements:
 Unity 2019.1.14f1 or Later
+
 Unity ARFoundation 2.1.1
+
 ARCore XR Plugin 2.1.1
+
 ARKit XR Plugin 2.1.1
 
 Example File:
