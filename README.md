@@ -8,6 +8,10 @@ Website: https://portalble.cs.brown.edu
 
 #Developing Environment Requirements:
 
+Android SDK 7.0 or greater, you can find Android SDK by installing [Android Studio](https://developer.android.com/studio)
+
+Leap Motion Orion 4.0 (**note, Leap Moion Orion 3.2, Orion Beta, or other ealier Leap Motion drivers WILL NOT WORK with our system. Please upgrade to Leap Motion Orion 4.0**)
+
 Unity 2019.1.14f1 or Later
 
 Unity ARFoundation 2.1.1
