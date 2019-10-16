@@ -15,8 +15,11 @@ Android SDK 7.0 or greater, you can find Android SDK by installing [Android Stud
 Unity 2019.1.14f1 or Later
 
 Use Unity Package Manager to install the following:
+
 Unity ARFoundation 2.1.1
+
 ARCore XR Plugin 2.1.1
+
 ARKit XR Plugin 2.1.1
 
 # Example File:
