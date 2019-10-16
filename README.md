@@ -12,7 +12,7 @@ Android SDK 7.0 or greater, you can find Android SDK by installing [Android Stud
 
 [Leap Motion Orion 4.0](https://developer.leapmotion.com/releases/leap-motion-orion-400) (**note, Leap Moion Orion 3.2, Orion Beta, or other ealier Leap Motion drivers WILL NOT WORK with our system. Please upgrade to Leap Motion Orion 4.0**)
 
-Unity 2019.1.14f1 or Later
+[Unity Hub + Unity 2019.1.14f1](https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.exe) or Later
 
 Use Unity Package Manager to install the following:
 
