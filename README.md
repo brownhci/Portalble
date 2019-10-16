@@ -6,7 +6,7 @@ environment with your bare hands. Current master branch is for Android only. Ple
 
 Website: https://portalble.cs.brown.edu
 
-#Developing Environment Requirements:
+# Environment Requirements:
 
 Android SDK 7.0 or greater, you can find Android SDK by installing [Android Studio](https://developer.android.com/studio)
 
