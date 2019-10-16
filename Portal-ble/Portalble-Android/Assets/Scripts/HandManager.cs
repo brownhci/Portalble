@@ -391,11 +391,13 @@ public class HandManager : MonoBehaviour {
 		obj.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 		obj.GetComponent<Rigidbody> ().angularVelocity = Vector3.zero;
 		is_grabbing = false;
-		//obj.GetComponent<Rigidbody> ().velocity = palm.GetComponent<Rigidbody> ().velocity * 5.0f;
+	    /* jing's old code */
 
-
+        //obj.GetComponent<Rigidbody> ().velocity = palm.GetComponent<Rigidbody> ().velocity * 5.0f;
+            
 		Vector3 v = calculateVelocity ();
 		obj.GetComponent<Rigidbody> ().velocity = new Vector3 (v[0], v[1] / 1.5f,v[2]);
+
 
         if (!reEnableGravity)
         {
