@@ -5,16 +5,21 @@ environment with your bare hands. Current master branch is for Android only. Ple
 Website: https://portalble.cs.brown.edu
 
 #Developing Environment Requirements:
+
 Unity 2019.1.14f1 or Later
+
 Unity ARFoundation 2.1.1
+
 ARCore XR Plugin 2.1.1
+
 ARKit XR Plugin 2.1.1
 
-Example File:
+# Example File:
 Examples/Grab/BasicGrab.unity
 
-Building for Android:
+# Building for Android:
 [Step 1 -  Unity Configuration](https://youtu.be/JmuZOQ3fii4 "Step 1 -  Unity Configuration")
+
 Step 2- plugin Leap Motion device to a Windows 64-bit PC (or Intel computer stick below), 
 Run this file:  **.../Portalble/PortalbleServer/x64/Rlease/PortalbleService.exe****
 You should see message "HMD is all set" at the end of the log.
