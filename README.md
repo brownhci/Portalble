@@ -8,21 +8,21 @@ Website: https://portalble.cs.brown.edu
 
 # Environment Requirements:
 
-[Leap Motion Hand Tracker](https://www.leapmotion.com/where-to-buy/global/)
+- [Leap Motion Hand Tracker](https://www.leapmotion.com/where-to-buy/global/)
 
-Android SDK 7.0 or greater, you can find Android SDK by installing [Android Studio](https://developer.android.com/studio)
+- Android SDK 7.0 or greater, you can find Android SDK by installing [Android Studio](https://developer.android.com/studio)
 
-[Leap Motion Orion 4.0](https://developer.leapmotion.com/releases/leap-motion-orion-400) (**note, Leap Moion Orion 3.2, Orion Beta, or other ealier Leap Motion drivers WILL NOT WORK with our system. Please upgrade to Leap Motion Orion 4.0**)
+- [Leap Motion Orion 4.0](https://developer.leapmotion.com/releases/leap-motion-orion-400) (**note, Leap Moion Orion 3.2, Orion Beta, or other ealier Leap Motion drivers WILL NOT WORK with our system. Please upgrade to Leap Motion Orion 4.0**)
 
-[Unity Hub + Unity 2019.1.14f1](https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.exe) or Later
+- [Unity Hub + Unity 2019.1.14f1](https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.exe) or Later
 
-Use Unity Package Manager to install the following:
+- Use Unity Package Manager to install the following:
 
-Unity ARFoundation 2.1.1
+    Unity ARFoundation 2.1.1
 
-ARCore XR Plugin 2.1.1
+    ARCore XR Plugin 2.1.1
 
-ARKit XR Plugin 2.1.1
+    ARKit XR Plugin 2.1.1
 
 # Example File:
 Examples/Grab/BasicGrab.unity
