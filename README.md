@@ -18,12 +18,15 @@ ARKit XR Plugin 2.1.1
 Examples/Grab/BasicGrab.unity
 
 # Building for Android:
+[Step 0] - Make sure your **smartphone** and **windows pc** are under the **same** network
+
 [Step 1 -  Unity Configuration](https://youtu.be/JmuZOQ3fii4 "Step 1 -  Unity Configuration")
 
 Step 2- plugin Leap Motion device to a Windows 64-bit PC (or Intel computer stick below), 
 Run this file:  **.../Portalble/PortalbleServer/x64/Rlease/PortalbleService.exe****
 You should see message "HMD is all set" at the end of the log.
 
+Step 3- Run the android instance on your phone, if it succeeds, you will see a message logs on the **PortalbleService.exe** window, if **PortalbleService is not refreshing, click on that window and press anykey to refresh**
 
 # Hardware configuration
 Leap Motion
