@@ -8,6 +8,8 @@ Website: https://portalble.cs.brown.edu
 
 # Environment Requirements:
 
+[Leap Motion Hand Tracker](https://www.leapmotion.com/where-to-buy/global/)
+
 Android SDK 7.0 or greater, you can find Android SDK by installing [Android Studio](https://developer.android.com/studio)
 
 [Leap Motion Orion 4.0](https://developer.leapmotion.com/releases/leap-motion-orion-400) (**note, Leap Moion Orion 3.2, Orion Beta, or other ealier Leap Motion drivers WILL NOT WORK with our system. Please upgrade to Leap Motion Orion 4.0**)
@@ -38,9 +40,10 @@ You should see message "HMD is all set" at the end of the log.
 
 Step 3- Run the android instance on your phone, if it succeeds, you will see a message logs on the **PortalbleService.exe** window, if **PortalbleService is not refreshing, click on that window and press anykey to refresh**
 
-# Hardware configuration
-Leap Motion
+# Making it "Portable"
 [Intel Compute Stick](https://www.intel.com/content/www/us/en/products/boards-kits/compute-stick/stk2m3w64cc.html)
+
 [20 W battery power bank (5V, 4Ah) or equivalent](https://www.amazon.com/gp/product/B01LRQDAEI/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1)
+
 [Lasercut case and 3D print files]
 
