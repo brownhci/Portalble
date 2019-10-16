@@ -24,7 +24,7 @@ ARKit XR Plugin 2.1.1
 Examples/Grab/BasicGrab.unity
 
 # Building for Android:
-[Pre-flight] - Check you have installed the [Android Studio](https://developer.android.com/studio) and [Leap Motion Orion 4.0](https://developer.leapmotion.com/releases/leap-motion-orion-400) and Using a **64-bit windows computer **
+[Pre-flight] - Check you have installed the [Android Studio](https://developer.android.com/studio) and [Leap Motion Orion 4.0](https://developer.leapmotion.com/releases/leap-motion-orion-400) and Using a **64-bit windows computer**
 
 [Step 0] - Make sure your **smartphone** and **windows pc** are under the **same** network
 
