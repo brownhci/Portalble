@@ -27,6 +27,8 @@ Website: https://portalble.cs.brown.edu
 # Example File:
 Examples/Grab/BasicGrab.unity
 
+# Calibrate:
+[Add Calibration Unity Scene to your project](https://youtu.be/XQJYxD5Hnbc)
 # Building for Android:
 [Pre-flight] - Check you have installed the [Android Studio](https://developer.android.com/studio) and [Leap Motion Orion 4.0](https://developer.leapmotion.com/releases/leap-motion-orion-400) and Using a **64-bit windows computer**
 
