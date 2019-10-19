@@ -47,5 +47,6 @@ Step 3- Run the android instance on your phone, if it succeeds, you will see a m
 
 [20 W battery power bank (5V, 4Ah) or equivalent](https://www.amazon.com/gp/product/B01LRQDAEI/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1)
 
-[Lasercut case and 3D print files]
+**Lasercut case and 3D print files are in the folder "3D print and lasercut file". Please also purchase thses [suction caps](https://www.amazon.com/gp/product/B0018N26LY/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1) for mounting the leapmotion to your smartphone
+
 
