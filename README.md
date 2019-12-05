@@ -1,3 +1,7 @@
+# Important Notice!
+    We are updating our SVM support, please clone this branch later! Thanks!
+    
+    
 # Portalble
 Welcome to Portal-ble! This system allows you to directly manipulate virtual objects in a smartphone augmented reality (AR)
 environment with your bare hands. Current master branch is for Android only. Please see iOS branch for updates and schedules.
@@ -5,6 +9,7 @@ environment with your bare hands. Current master branch is for Android only. Ple
 **Important: This branch is Android only, your android version should be at least >= Ver.7.0 (Nougat) with latest ARCore installed. iOS version will be ready soon**
 
 Website: https://portalble.cs.brown.edu
+
 
 # Environment Requirements:
 
