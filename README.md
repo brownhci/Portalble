@@ -54,4 +54,6 @@ Step 3- Run the android instance on your phone, if it succeeds, you will see a m
 
 **Lasercut case and 3D print files are in the folder "3D print and lasercut file". Please also purchase thses [suction caps](https://www.amazon.com/gp/product/B0018N26LY/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1) for mounting the leapmotion to your smartphone
 
-
+# Hacks
+How do i edit the Portalble-Unity window menu?
+change the file in Portalble/Editor/PortalbleWindowManager.cs
