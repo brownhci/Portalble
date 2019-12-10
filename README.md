@@ -56,4 +56,4 @@ Step 3- Run the android instance on your phone, if it succeeds, you will see a m
 
 # Hacks
 How do i edit the Portalble-Unity window menu?
-change the file in Portalble/Editor/PortalbleWindowManager.cs
+**change the file in Portalble/Editor/PortalbleWindowManager.cs**
