@@ -34,16 +34,18 @@ public class WebSocketUnity {
 			return;
 		}
 		mUrl = url;
-#if UNITY_IPHONE && !UNITY_EDITOR
-		mPlatformWebSocket = new WebSocketUnityiOS(mUrl, eventHandler.gameObject.name);
-#elif UNITY_ANDROID && !UNITY_EDITOR
+
+#if UNITY_ANDROID && !UNITY_EDITOR
 		mPlatformWebSocket = new WebSocketUnityAndroid(mUrl, eventHandler.gameObject.name);
 #elif UNITY_WEBGL && !UNITY_EDITOR
 		mPlatformWebSocket = new WebSocketUnityWebGL(mUrl,  eventHandler as WebSocketUnityDelegate, eventHandler.gameObject.name);
-#else
-		mPlatformWebSocket = new WebSocketUnityCSharp(mUrl, eventHandler as WebSocketUnityDelegate);
 #endif
-	}	
+
+#if UNITY_EDITOR
+        mPlatformWebSocket = new WebSocketUnityCSharp(mUrl, eventHandler as WebSocketUnityDelegate);
+#endif
+
+    }	
 
 #region Basic features
 
