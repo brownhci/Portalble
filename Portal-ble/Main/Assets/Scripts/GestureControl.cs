@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using Accord.MachineLearning.VectorMachines;
 using Accord.Statistics.Kernels;
+using System.Runtime.InteropServices;
 
 /* This is the gesture detection used for Portal-ble
  * Our default engine uses an open-source Accord.net
@@ -12,8 +13,23 @@ using Accord.Statistics.Kernels;
    purchase it on the Unitystore*/
 
 public class GestureControl : MonoBehaviour {
-	//Left hand finger declare
-	private GameObject palm;
+
+    #region iOS SVM Import
+
+    #if UNITY_IOS && !UNITY_EDITOR
+            private const string DllName = "__Internal";
+    #else
+        private const string DllName = "libSVMIOS";
+    #endif
+
+    [DllImport(DllName)]
+    private static extern void LoadSVM(string msg);
+    [DllImport(DllName)]
+    private static extern int PredictSVM(int mat_n, float[] dataArray);
+    #endregion
+
+    //Left hand finger declare
+    private GameObject palm;
     
     //poseDetectorMLtrainning
 	//LogisticRegression logis_reg_model;
@@ -33,9 +49,10 @@ public class GestureControl : MonoBehaviour {
 
 	//Gesture dictionary
 	Dictionary<int, string> gesture_dict = new Dictionary<int, string>();
+   
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		dataMgr = GameObject.Find ("gDataManager");
 		gesture_buff_len = dataMgr.GetComponent<DataManager> ().gestBuffer;
 
@@ -73,8 +90,8 @@ public class GestureControl : MonoBehaviour {
             readSVM();
         }
     }
-    
-	/* 	gesture detection using OpenCV Engine
+
+    /* 	gesture detection using OpenCV Engine
      * 	You need to purchase the OpenCV module in order to use
      * 	this function. 
 	*	Input: None
@@ -125,6 +142,15 @@ public class GestureControl : MonoBehaviour {
 	}
     */
 
+
+    /* 	gestureDetectorMLpredict
+	*	Input: None
+	*	Output: None
+	*	Summary: 1. Collect current hand data 2. Generate an instant prediction for current gesture
+	*/
+   
+
+    /* prediction android */
     private int gestureDetectorMLpredict()
     {
         /* initial satte */
@@ -157,10 +183,17 @@ public class GestureControl : MonoBehaviour {
             cur_data_array[i * 6 + 4] = vec_bone1[i].y;
             cur_data_array[i * 6 + 5] = vec_bone1[i].z;
         }
+
+#if UNITY_IOS
+        int result = PredictSVM(mat_n, Array.ConvertAll(cur_data_array, x => (float)x));
+#else
+        int result = svm_model.Decide(cur_data_array);
+#endif
+        return result;
+
         
-        //predict
-        return svm_model.Decide(cur_data_array);
     }
+
 
     /* 	[important] Used to store the buffered gesture
 	*	Input: None
@@ -210,6 +243,9 @@ public class GestureControl : MonoBehaviour {
                 System.IO.File.WriteAllBytes(System.IO.Path.Combine(Application.persistentDataPath, "svm"), svm_reader.bytes);
                 svm_model = Accord.IO.Serializer.Load<MulticlassSupportVectorMachine<Linear>>(System.IO.Path.Combine(Application.persistentDataPath, "svm"));
             }
+#elif UNITY_IOS
+            LoadSVM(System.IO.Path.Combine(Application.streamingAssetsPath, "svm.xml"));
+            yield return true;
 #else
             svm_model = Accord.IO.Serializer.Load<MulticlassSupportVectorMachine<Linear>>(System.IO.Path.Combine(Application.streamingAssetsPath, "svm"));
             yield return svm_model;

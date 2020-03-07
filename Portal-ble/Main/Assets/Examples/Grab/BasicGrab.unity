@@ -5408,7 +5408,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1218827174}
-  - component: {fileID: 1218827173}
   - component: {fileID: 1218827175}
   m_Layer: 0
   m_Name: WebsocketManager
@@ -5417,20 +5416,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1218827173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1218827172}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a801cd4cf62764d8cbc739bdc7eb4c2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  websocketServer: 192.168.1.201
-  websocketPort: 9999
 --- !u!4 &1218827174
 Transform:
   m_ObjectHideFlags: 0
@@ -5459,8 +5444,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   websocketServer: 192.168.1.201
   websocketPort: 9999
-  hand_l: {fileID: 0}
-  hand_r: {fileID: 0}
+  hand_l: {fileID: 1949621240}
+  hand_r: {fileID: 1614409302}
 --- !u!1 &1313366058
 GameObject:
   m_ObjectHideFlags: 0
