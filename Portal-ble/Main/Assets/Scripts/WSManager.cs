@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using AOT;
 using System.Collections;
+using Portalble;
 
 /* ios version */
 public class WSManager : MonoBehaviour, WebSocketUnityDelegate
@@ -89,7 +90,9 @@ public class WSManager : MonoBehaviour, WebSocketUnityDelegate
         {
             OnWebSocketUnityReceiveMessage(curr_message);
         }
-        #endif
+#endif
+
+        
     }
 
     /// <summary>

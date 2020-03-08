@@ -107,7 +107,7 @@ public class GestureControl : MonoBehaviour {
     private int gestureDetectorMLpredict()
     {
         /* initial satte */
-        #if UNITY_IOS
+        #if UNITY_IOS && !UNITY_EDITOR
             if (!ios_svm_model_ready)
                 return 0;
         #else
@@ -142,7 +142,7 @@ public class GestureControl : MonoBehaviour {
             cur_data_array[i * 6 + 5] = vec_bone1[i].z;
         }
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         //int result = PredictSVM(mat_n, Array.ConvertAll(cur_data_array, x => (float)x));
         int result = PredictSVM(mat_n, cur_data_array);
 #else

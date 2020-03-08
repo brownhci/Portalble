@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* open-source main */
 /*todo, add last grabbed object */
 namespace Portalble.Functions.Grab {
     /// <summary>
@@ -458,7 +459,8 @@ namespace Portalble.Functions.Grab {
             m_isGrabbing = false;
             m_regrabCooldown = REGRAB_COOLDOWN;
 
-            OnRelease(m_selectObj.IsLeftHanded ? m_tLeftHand.Find("palm") : m_tRightHand.Find("palm"), m_selectObj);
+            /* ask xiangyu */
+            //OnRelease(m_selectObj.IsLeftHanded ? m_tLeftHand.Find("palm") : m_tRightHand.Find("palm"), m_selectObj);
             m_lastGrabObject = m_selectObj;
         }
 

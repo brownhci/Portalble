@@ -218,6 +218,49 @@ namespace Portalble
                 return null;
             }
         }
+
+        /// <summary>
+        /// Get index finger (tip) transform of active hand
+        /// </summary>
+        public Transform ActiveHandIndexFingerTransform
+        {
+            get
+            {
+                string active = WebSocketManager.getActiveHand();
+                switch (active)
+                {
+                    case "NO_HAND":
+                        return null;
+                    case "LEFT_HAND":
+                        return LeftHandTransform.Find("../index/bone3");
+                    case "RIGHT_HAND":
+                        return RightHandTransform.Find("../index/bone3"); ;
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get index finger (tip) transform of active hand
+        /// </summary>
+        public Transform ActiveHandThumbTransform
+        {
+            get
+            {
+                string active = WebSocketManager.getActiveHand();
+                switch (active)
+                {
+                    case "NO_HAND":
+                        return null;
+                    case "LEFT_HAND":
+                        return LeftHandTransform.Find("../thumb/bone3");
+                    case "RIGHT_HAND":
+                        return RightHandTransform.Find("../thumb/bone3"); ;
+                }
+                return null;
+            }
+        }
+
         /// <summary>
         /// Get hand (palm) transform of active hand
         /// </summary>
