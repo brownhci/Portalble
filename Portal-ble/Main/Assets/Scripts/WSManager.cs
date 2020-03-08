@@ -101,7 +101,7 @@ public class WSManager : MonoBehaviour, WebSocketUnityDelegate
         Debug.Log("Connecting" + websocketServer);
         string url = "ws://" + websocketServer + ":" + websocketPort;
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         Jetfire.Open(url);
         
 #else
@@ -114,7 +114,7 @@ public class WSManager : MonoBehaviour, WebSocketUnityDelegate
     private void updateWebSocketServerInfo()
     {
         // websocketServer = websocketInputField.text;
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         Jetfire.Close();
 #else
         webSocket.Close();

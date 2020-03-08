@@ -209,12 +209,12 @@ public class GestureControl : MonoBehaviour {
                 svm_model = Accord.IO.Serializer.Load<MulticlassSupportVectorMachine<Linear>>(System.IO.Path.Combine(Application.persistentDataPath, "svm"));
             }
         }
-#elif UNITY_IOS
+#elif UNITY_IOS && !UNITY_EDITOR
         LoadSVM(System.IO.Path.Combine(Application.streamingAssetsPath, "svm.xml"));
             ios_svm_model_ready = true;
             yield return true;
 #else
-            svm_model = Accord.IO.Serializer.Load<MulticlassSupportVectorMachine<Linear>>(System.IO.Path.Combine(Application.streamingAssetsPath, "svm"));
+        svm_model = Accord.IO.Serializer.Load<MulticlassSupportVectorMachine<Linear>>(System.IO.Path.Combine(Application.streamingAssetsPath, "svm"));
             yield return svm_model;
 #endif
     }
