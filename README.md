@@ -59,19 +59,19 @@ You should see message "HMD is all set" at the end of the log.
 - your PortalbleServer is on a 64-bit computer not 32-bit
 - you have installed the Leap Motion Driver and can turn on Leap Motion Visualizer to confirm.
 
-## 4. Go to the build folder
-4.1 if you have not installed Pod, do `sudo gem install cocoapods`<br>
+## 3. Go to the build folder
+3.1 if you have not installed Pod, do `sudo gem install cocoapods`<br>
 - On newer versions of MacOS, you might experience issues with setting `$PATH`. If so, use `sudo gem install -n /usr/local/bin cocoapods`
 
-4.2 Go to the build folder, and run: `pod init`<br>
-4.3 Open Podfile (using any text editor)<br>
-4.4 Find the line "# Pods for Unity-iPhone", below it insert a **new line** `pod 'jetfire', '~> 0.1.5'`<br>
+3.2 Go to the build folder, and run: `pod init`<br>
+3.3 Open Podfile (using any text editor)<br>
+3.4 Find the line "# Pods for Unity-iPhone", below it insert a **new line** `pod 'jetfire', '~> 0.1.5'`<br>
 - For more information about using Cocoapods, check out [this tutorial](https://guides.cocoapods.org/using/using-cocoapods).
 
 
-4.5 Save and close the file, and in that directory, run `pod install` to install the depencies and create a `.xcworksapce` file<br>
-4.6 Open `Unity-iPhone.xcworkspace`<br>
-4.7 Select the Unity-iPhone project, link your provisions, and build!
+3.5 Save and close the file, and in that directory, run `pod install` to install the depencies and create a `.xcworksapce` file<br>
+3.6 Open `Unity-iPhone.xcworkspace`<br>
+3.7 Select the Unity-iPhone project, link your provisions, and build!
 
 ## After you have built for first time...
 use unity command + b to automatically update the XCode files, no need to do step 4 again if you use command + b
