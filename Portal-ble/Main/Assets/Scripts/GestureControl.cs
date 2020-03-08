@@ -146,7 +146,7 @@ public class GestureControl : MonoBehaviour {
         //int result = PredictSVM(mat_n, Array.ConvertAll(cur_data_array, x => (float)x));
         int result = PredictSVM(mat_n, cur_data_array);
 #else
-        int result = svm_model.Decide(cur_data_array);
+        int result = svm_model.Decide(Array.ConvertAll(cur_data_array, x => (double)x));
 #endif
 
         return result;
