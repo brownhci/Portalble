@@ -36,8 +36,9 @@ public class WSManager : MonoBehaviour, WebSocketUnityDelegate
     private float websocketLastUpdate = 0;
     private bool websocketIdel = true;
     private string curr_message = "";
-
     private GameObject InputHolder;
+
+    private bool DummyDataReplay = false;
 
     private int handNumber = 0;
     public int HandNumber
@@ -83,7 +84,7 @@ public class WSManager : MonoBehaviour, WebSocketUnityDelegate
         if (!result)
             Debug.Log("Something went wrong with idleHandManager, unkonwn issue");
 
-        #if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         curr_message = Jetfire.curr_message;
         // p_message
         if (curr_message != "")
@@ -92,14 +93,24 @@ public class WSManager : MonoBehaviour, WebSocketUnityDelegate
         }
 #endif
 
-        
+
     }
 
+    public void enableDummyDataReplay() {
+        DummyDataReplay = true;
+    }
+
+    public void disableDummyDataReplay()
+    {
+        DummyDataReplay = false;
+    }
     /// <summary>
     /// This function is called when the object becomes enabled and active.
     /// </summary>
     public void OnEnable()
     {
+        if (DummyDataReplay)
+            return;
         // Create web socket
         Debug.Log("Connecting" + websocketServer);
         string url = "ws://" + websocketServer + ":" + websocketPort;
@@ -108,6 +119,8 @@ public class WSManager : MonoBehaviour, WebSocketUnityDelegate
         Jetfire.Open(url);
         
 #else
+        if (DummyDataReplay)
+            return;
         webSocket = new WebSocketUnity(url, this);
         // Open the connection
         webSocket.Open();

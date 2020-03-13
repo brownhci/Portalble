@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657838, g: 0.49641234, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5488,6 +5488,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1218827174}
   - component: {fileID: 1218827175}
+  - component: {fileID: 1218827173}
   m_Layer: 0
   m_Name: WebsocketManager
   m_TagString: Untagged
@@ -5495,6 +5496,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1218827173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218827172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1685a36afa118cd4b969e2c350376289, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1218827174
 Transform:
   m_ObjectHideFlags: 0
@@ -5523,6 +5536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   websocketServer: 192.168.1.201
   websocketPort: 9999
+  DummyDataReplay: 1
 --- !u!1 &1313366058
 GameObject:
   m_ObjectHideFlags: 0
