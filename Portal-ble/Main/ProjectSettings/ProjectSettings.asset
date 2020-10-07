@@ -3,7 +3,7 @@
 --- !u!129 &1
 PlayerSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 16
+  serializedVersion: 18
   productGUID: 27b3bc76385d7a549b6228012fdfce25
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: BrownHCI
-  productName: PeriphalDisplay
+  productName: PortalbleMediaPipe
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -52,8 +52,8 @@ PlayerSettings:
   m_StackTraceTypes: 010000000100000001000000010000000100000001000000
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
-  iosAppInBackgroundBehavior: 0
   displayResolutionDialog: 1
+  iosUseCustomAppBackgroundBehavior: 0
   iosAllowHTTPDownload: 1
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 0
@@ -65,6 +65,7 @@ PlayerSettings:
   disableDepthAndStencilBuffers: 0
   androidStartInFullscreen: 1
   androidRenderOutsideSafeArea: 1
+  androidUseSwappy: 0
   androidBlitType: 0
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
@@ -149,6 +150,9 @@ PlayerSettings:
     oculus:
       sharedDepthBuffer: 0
       dashSupport: 0
+      lowOverheadMode: 0
+      protectedContext: 0
+      v2Signing: 0
     enable360StereoCapture: 0
   isWsaHolographicRemotingEnabled: 0
   protectGraphicsMemory: 1
@@ -160,12 +164,12 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: edu.brownhci.portalble.PeripheralDisplay
+    Android: edu.brownhci.portalble.PortalbleMediaPipe
     iPhone: com.BrownHCI.PortalbleiOS
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 24
-  AndroidTargetSdkVersion: 24
+  AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   aotOptions: 
   stripEngineCode: 1
@@ -270,6 +274,8 @@ PlayerSettings:
     height: 180
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
+  AndroidValidateAppBundleSize: 1
+  AndroidAppBundleSizeToValidate: 150
   resolutionDialogBanner: {fileID: 0}
   m_BuildTargetIcons: []
   m_BuildTargetPlatformIcons:
@@ -365,13 +371,16 @@ PlayerSettings:
       m_Height: 36
       m_Kind: 0
       m_SubKind: 
-  m_BuildTargetBatching: []
+  m_BuildTargetBatching:
+  - m_BuildTarget: Android
+    m_StaticBatching: 0
+    m_DynamicBatching: 1
   m_BuildTargetGraphicsAPIs: []
   m_BuildTargetVRSettings: []
-  m_BuildTargetEnableVuforiaSettings: []
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
   openGLRequireES32: 0
+  vuforiaEnabled: 0
   m_TemplateCustomTags: {}
   mobileMTRendering:
     Android: 0
@@ -589,6 +598,7 @@ PlayerSettings:
   monoEnv: 
   splashScreenBackgroundSourceLandscape: {fileID: 0}
   splashScreenBackgroundSourcePortrait: {fileID: 0}
+  blurSplashScreenBackground: 1
   spritePackerPolicy: 
   webGLMemorySize: 256
   webGLExceptionSupport: 1
@@ -608,7 +618,8 @@ PlayerSettings:
     4: UNITY_POST_PROCESSING_STACK_V2
   platformArchitecture:
     iPhone: 1
-  scriptingBackend: {}
+  scriptingBackend:
+    Android: 1
   il2cppCompilerConfiguration: {}
   managedStrippingLevel: {}
   incrementalIl2cppBuild: {}
