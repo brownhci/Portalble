@@ -1,14 +1,18 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Kalman;
 using System.Linq;
+using System.IO;
+using System;
 /* sync only get information from Leap */
 /* it does not deals with gesture  */
 
 public class Sync : MonoBehaviour {
-	private WSManager ws;
-	private DataManager dataManager;
+    public bool fromMediaPipe = true;
+	public Mediapipe.HandTracking.Process process;
+	//private WSManager ws;
+	//private DataManager dataManager;
 	private GameObject l_palm;
 
 	private GameObject l_finger0;
@@ -62,8 +66,8 @@ public class Sync : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		ws = GameObject.Find ("WebsocketManager").GetComponent<WSManager>();
-		dataManager = GameObject.Find ("gDataManager").GetComponent<DataManager> ();
+		//ws = GameObject.Find ("WebsocketManager").GetComponent<WSManager>();
+		//dataManager = GameObject.Find ("gDataManager").GetComponent<DataManager> ();
 		l_palm = this.transform.GetChild (5).gameObject;
 		l_finger0 = this.transform.GetChild (0).gameObject;
 		l_finger0_bone0 = l_finger0.transform.GetChild (0).gameObject;
@@ -111,6 +115,7 @@ public class Sync : MonoBehaviour {
             queueHand[i] = Camera.main.transform.position + Camera.main.transform.rotation * leapMotionOffset;
 		}
 
+        palmScale = l_palm.transform.localScale;
 
         //check
         Debug.Log("Sync check hand." + GlobalStates.globalConfigFile.Available);
@@ -118,23 +123,43 @@ public class Sync : MonoBehaviour {
             initialLeapMotionOffset = GlobalStates.globalConfigFile.HandOffset;
         else
             initialLeapMotionOffset = leapMotionOffset;
-	}
+
+#if UNITY_EDITOR
+        if (fromMediaPipe)
+        {
+            loadHandSkeletonFromMediaPipe();
+        }
+#endif
+
+    }
+
+    private Vector3 palmScale;
 
 	// Update is called once per frame
 	void Update () {
-		string msg = "";
-		if (this.name.Contains("_l"))
-			msg = ws.getHandInfoLeft ();
-		else if (this.name.Contains("_r"))
-			msg = ws.getHandInfoRight ();
-        //Debug.Log (msg);
-        //if (msg.Equals("")) 
-        //	this.gameObject.SetActive (false);
+        if (fromMediaPipe)
+        {
+            updateHandSkeletonFromMediaPipe();
+        }
+        else
+        {
+            string msg = "";
+            if (this.name.Contains("_l"))
+            {
+				//msg = ws.getHandInfoLeft();
+			}
+			else if (this.name.Contains("_r"))
+            {
+				//msg = ws.getHandInfoRight();
+			}
+			//Debug.Log (msg);
+			//if (msg.Equals("")) 
+			//	this.gameObject.SetActive (false);
 
-		string[] hand_info = msg.Split (new char[] {',', ':', ';'});
+			string[] hand_info = msg.Split(new char[] { ',', ':', ';' });
 
 
-        // check current phone orientation
+            // check current phone orientation
 #if UNITY_ANDROID
         leapMotionOffset = initialLeapMotionOffset;
         if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) {
@@ -145,13 +170,13 @@ public class Sync : MonoBehaviour {
         }
 #endif
 
-        /* return before any hand found */
-        if (!hand_info[0].Equals(""))
-        {
-            updateHandSkeletonFromLeap(hand_info);
-        }
+            /* return before any hand found */
+            if (!hand_info[0].Equals(""))
+            {
+                updateHandSkeletonFromLeap(hand_info);
+            }
 
-        // check current phone orientation
+            // check current phone orientation
 #if UNITY_ANDROID
         // before this, hand rotation is set to camera rotation. So we can just multiply it
         if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) {
@@ -163,11 +188,120 @@ public class Sync : MonoBehaviour {
             transform.rotation = rot * transform.rotation;
         }
 #endif
+        }
     }
 
-	/* updating hand skeleton from Leap */
-	void updateHandSkeletonFromLeap(string[] hand_info){
+    //List<string> frameList = new List<string>();
+    //int frame_idx;
 
+    /* Xander, please check from here, 
+     * this function takes mediapipe coordinates from a file, you 
+     * need to rewrite this to take mediapipe coordinates from the stream */
+    void loadHandSkeletonFromMediaPipe()
+    {
+		process.LoadHandSkeletonFromMediaPipe();
+        //print("load _pos");
+        //string path = "Assets/StreamingAssets/mediapipe-landmarks.txt";
+
+        ////Read the text from directly from the test.txt file
+        //StreamReader reader = new StreamReader(path);
+        //string t = reader.ReadToEnd();
+        //frameList = new List<string>();
+        //string[] tlist = t.Split('\n');
+        //for (int i = 0; i < tlist.Length; i += 1)
+        //{
+        //    frameList.Add(tlist[i]);
+        //}
+        //frame_idx = 0;
+    }
+
+    void updateHandSkeletonFromMediaPipe()
+    {
+//#if UNITY_EDITOR
+//		string frame = frameList[frame_idx];
+//        string[] coords = frame.Split(';');
+//#elif UNITY_ANDROID
+		string[] coords = process.GetCoords();
+//#endif
+		Vector3[] vecs = new Vector3[coords.Length];
+		// vecshaha = vecs;
+		Vector3 te = Vector3.zero;
+		for (int j = 0; j < coords.Length; j += 1)
+		{
+			string[] xyz = coords[j].Split(',');
+			if (xyz[0] != "")
+			{
+				te.x = (float)Convert.ToDouble(xyz[0]);
+				te.y = (float)Convert.ToDouble(xyz[1]);
+				te.z = (float)Convert.ToDouble(xyz[2]);
+			}
+			vecs[j] = te;
+		}
+
+		Vector3 dir00 = vecs[2] - vecs[1];
+        Vector3 dir01 = vecs[3] - vecs[2];
+        Vector3 dir02 = vecs[4] - vecs[3];
+        l_finger0_bone0.transform.localPosition = vecs[2];
+        l_finger0_bone0.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir00);
+        l_finger0_bone1.transform.localPosition = vecs[3];
+        l_finger0_bone1.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir01);
+        l_finger0_bone2.transform.localPosition = vecs[4];
+        l_finger0_bone2.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir02);
+
+        Vector3 dir10 = vecs[6] - vecs[5];
+        Vector3 dir11 = vecs[7] - vecs[6];
+        Vector3 dir12 = vecs[8] - vecs[7];
+        l_finger1_bone0.transform.localPosition = vecs[6];
+        l_finger1_bone0.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir10);
+        l_finger1_bone1.transform.localPosition = vecs[7];
+        l_finger1_bone1.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir11);
+        l_finger1_bone2.transform.localPosition = vecs[8];
+        l_finger1_bone2.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir12);
+
+        Vector3 dir20 = vecs[10] - vecs[9];
+        Vector3 dir21 = vecs[11] - vecs[10];
+        Vector3 dir22 = vecs[12] - vecs[11];
+        l_finger2_bone0.transform.localPosition = vecs[10];
+        l_finger2_bone0.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir20);
+        l_finger2_bone1.transform.localPosition = vecs[11];
+        l_finger2_bone1.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir21);
+        l_finger2_bone2.transform.localPosition = vecs[12];
+        l_finger2_bone2.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir22);
+
+        Vector3 dir30 = vecs[14] - vecs[13];
+        Vector3 dir31 = vecs[15] - vecs[14];
+        Vector3 dir32 = vecs[16] - vecs[15];
+        l_finger3_bone0.transform.localPosition = vecs[14];
+        l_finger3_bone0.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir30);
+        l_finger3_bone1.transform.localPosition = vecs[15];
+        l_finger3_bone1.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir31);
+        l_finger3_bone2.transform.localPosition = vecs[16];
+        l_finger3_bone2.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir32);
+
+        Vector3 dir40 = vecs[18] - vecs[17];
+        Vector3 dir41 = vecs[19] - vecs[18];
+        Vector3 dir42 = vecs[20] - vecs[19];
+        l_finger4_bone0.transform.localPosition = vecs[18];
+        l_finger4_bone0.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir40);
+        l_finger4_bone1.transform.localPosition = vecs[19];
+        l_finger4_bone1.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir41);
+        l_finger4_bone2.transform.localPosition = vecs[20];
+        l_finger4_bone2.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir42);
+
+        // vecs[0] + vecs[5] + vecs[17]
+        l_palm.transform.localPosition = (vecs[0] + vecs[5] + vecs[17]) / 3 ;
+        Vector3 vec1 = vecs[5] - vecs[0];
+        Vector3 vec2 = vecs[17] - vecs[0];
+        Vector3 palm_norm = Vector3.Cross(vec1, vec2);
+
+        l_palm.transform.localRotation = Quaternion.FromToRotation(Vector3.forward, palm_norm);
+        l_palm.transform.localScale = palmScale * 1.15f;
+        //frame_idx++;
+
+    }
+
+    /* updating hand skeleton from Leap */
+    void updateHandSkeletonFromLeap(string[] hand_info){
         /* checking que will be when getStringMode is called */
         /* check queue */
         int i = 2; //skip hand type
@@ -191,7 +325,7 @@ public class Sync : MonoBehaviour {
 
 					//local position
 					l_palm.transform.localPosition = palm_pos;
-					dataManager.setLeftHandPosition (palm_pos);
+					//dataManager.setLeftHandPosition (palm_pos);
 
 
 				} else if (type.Contains ("vel")) {
