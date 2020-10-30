@@ -5,11 +5,13 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.HandTracking {
-    public class Process : MonoBehaviour {
+namespace Mediapipe.HandTracking
+{
+    public class Process : MonoBehaviour
+    {
 
 
-        private const int SIZE_RESOLUSTION = 256;
+        private const int HAND_TRACKER_RESOLUTION = 256;
 
         public static Process INSTANCE { get; private set; }
 
@@ -32,38 +34,39 @@ namespace Mediapipe.HandTracking {
         private HandRect current_hand_rect;
 #endif
 
-        private void Awake() {
+        private void Awake()
+        {
             INSTANCE = this;
             LandmarkConverter.INSTANCE = LandmarkConverter.Create(orientation);
         }
 
         // Start is called before the first frame update
-        private void Start() {
+        private void Start()
+        {
             Debug.Log("Process.Start() called");
             if (ScreenLog.INSTANCE != null)
             {
                 hand_log_id = ScreenLog.INSTANCE.RegisterLogID();
                 converter_log_id = ScreenLog.INSTANCE.RegisterLogID();
             }
-            //Debug.Log("Soon entering: #if UNITY_ANDROID");
 #if UNITY_ANDROID
-            //Debug.Log("Now entering: #if UNITY_ANDROID");
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject currentUnityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
             hand_tracking = new AndroidJavaObject("com.jackie.mediapipe.HandTracking", currentUnityActivity);
-            //Debug.Log("called hand_tracking = new AndroidJavaObject(...);");
-            //Debug.Log("Process.Start(): hand_tracking: " + ((hand_tracking != null) ? hand_tracking.ToString() : "null"));
-            hand_tracking.Call("setResolution", SIZE_RESOLUSTION);
+            hand_tracking.Call("setResolution", HAND_TRACKER_RESOLUTION);
 #endif
             StartCoroutine(Quantization());
         }
 
-        private void Update() {
+        private void Update()
+        {
             string text = "no hand position";
             //Debug.Log("current_hand: " + ((current_hand != null) ? current_hand.ToString() : "null"));
 
-            if (null != current_hand) {
+            if (null != current_hand)
+            {
                 Vector3 v3 = current_hand.Position;
+                //Debug.Log("v3: " + ((v3 != null) ? v3.ToString() : "null"));
                 text = "hand position: (" + v3.x + ", " + v3.y + ", " + v3.z + ")";
                 string tmp = "";
                 for (int i = 0; i < current_hand.GetLandmarks().Length; i++)
@@ -78,11 +81,12 @@ namespace Mediapipe.HandTracking {
                 current_coords = tmp;
                 saveString = saveString + tmp + "\n";
 
-                ScreenLog.INSTANCE.Log(hand_log_id, text);
+                //ScreenLog.INSTANCE.Log(hand_log_id, text);
             }
         }
 
-        public void save() {
+        public void save()
+        {
             System.IO.File.WriteAllText(System.IO.Path.Combine(Application.persistentDataPath, "mediapipe-landmarks" + DateTime.Now.ToString("yyyy''MM''dd''HH''mm") + ".txt"), saveString);
         }
 
@@ -104,14 +108,14 @@ namespace Mediapipe.HandTracking {
             string[] tlist = t.Split('\n');
             for (int i = 0; i < tlist.Length; i += 1)
             {
-                Debug.Log("a line");
                 frameList.Add(tlist[i]);
             }
             frame_idx = 0;
 #endif
         }
 
-        private void FixedUpdate() {
+        private void FixedUpdate()
+        {
 #if UNITY_ANDROID
 
             //Debug.Log("Process.FixedUpdate(): hand_tracking: " + ((hand_tracking != null) ? hand_tracking.ToString() : "null"));
@@ -124,11 +128,11 @@ namespace Mediapipe.HandTracking {
 
             if (null != palm_data) current_hand_rect = HandRect.ParseFrom(palm_data);
 
-            if (null != hand_landmarks_data) {
+            if (null != hand_landmarks_data)
+            {
                 // Hand new_hand = Hand.MakeFrom(hand_landmarks_data, current_hand_rect);
                 // if (null == current_hand) current_hand = new_hand;
                 // else current_hand = Hand.DeVibrate(current_hand, new_hand);
-                //Debug.Log("boutta make the current hand");
                 current_hand = Hand.MakeFrom(hand_landmarks_data, current_hand_rect);
 
 
@@ -136,13 +140,16 @@ namespace Mediapipe.HandTracking {
 #endif
         }
 
-        public IEnumerator Quantization() {
-            while (true) {
+        public IEnumerator Quantization()
+        {
+            while (true)
+            {
                 Debug.Log("Quantization");
                 yield return new WaitForEndOfFrame();
                 FrameInput image = frame_input_manager.GetFrameInput();
                 if (null == image) continue;
-                if (!LandmarkConverter.INSTANCE.Valid()) {
+                if (!LandmarkConverter.INSTANCE.Valid())
+                {
                     LandmarkConverter.INSTANCE.SetInput((float)image.width / (float)image.height);
                     LandmarkConverter.INSTANCE.SetOutput((float)Screen.width / (float)Screen.height);
                 }
@@ -153,12 +160,14 @@ namespace Mediapipe.HandTracking {
             }
         }
 
-        public Vector3 GetPosition() {
+        public Vector3 GetPosition()
+        {
             if (null == current_hand) return Vector3.zero;
             return current_hand.Position;
         }
 
-        public Vector3 GetFingerLandmark(int index) {
+        public Vector3 GetFingerLandmark(int index)
+        {
             if (null == current_hand) return Vector3.zero;
             return current_hand.GetLandmark(index);
         }

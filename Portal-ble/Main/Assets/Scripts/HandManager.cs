@@ -56,6 +56,8 @@ public class HandManager : MonoBehaviour {
 
     public bool bIsLeftHand = true;
 
+	public UnityEngine.UI.Text currentGesture;
+
 	// Use this for initialization
 	void Start () {
 
@@ -114,7 +116,11 @@ public class HandManager : MonoBehaviour {
 		if (HandActionRecog.getInstance() != null && HandActionRecog.getInstance().IsMotion("OpenMenu", bIsLeftHand)) {
 			contextSwitch ("menu");
 		}
-	switch (context){
+
+		// debug line
+		currentGesture.text = (bIsLeftHand ? "left:" + Portalble.PortalbleGeneralController.main.LeftHandGesture : "right:" + Portalble.PortalbleGeneralController.main.RightHandGesture);
+
+		switch (context){
 		    case "menu":
 			    break;
 		    case "paint":

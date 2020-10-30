@@ -20,7 +20,10 @@ namespace Mediapipe.HandTracking.ARCore {
         }
 
         public void FixedUpdate() {
-            if (raycast_manager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), out_hits, TrackableType.PlaneWithinPolygon)) {
+            if (raycast_manager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), out_hits, TrackableType.PlaneWithinPolygon))
+            {
+                //if (raycast_manager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), out_hits, TrackableType.Planes))
+                //{
                 current_pose = out_hits[0].pose;
                 current_distance = out_hits[0].distance;
             }
