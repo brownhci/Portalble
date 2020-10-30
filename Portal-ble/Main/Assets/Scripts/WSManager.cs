@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System.Linq;
 using System.Runtime.InteropServices;
 using AOT;
+using System.Collections;
 using Portalble;
 
 /* ios version */
@@ -325,7 +326,7 @@ public class WSManager : MonoBehaviour, WebSocketUnityDelegate
             return "NO_HAND";
         }
 
-        //return "ERROR";
+        return "ERROR";
     }
 
 #endregion

@@ -56,13 +56,11 @@ public class HandManager : MonoBehaviour {
 
     public bool bIsLeftHand = true;
 
-	public UnityEngine.UI.Text currentGesture;
-
 	// Use this for initialization
 	void Start () {
 
-		//dataManager = GameObject.Find ("gDataManager").GetComponent<DataManager> ();
-		//gestureManager = this.GetComponent<GestureControl> ();
+		dataManager = GameObject.Find ("gDataManager").GetComponent<DataManager> ();
+		gestureManager = this.GetComponent<GestureControl> ();
 		paintManager = this.GetComponent<PaintManager> ();
 		palm = this.transform.GetChild (5).gameObject;
 		grabHolder = this.transform.GetChild (5).GetChild (0).gameObject;
@@ -74,7 +72,7 @@ public class HandManager : MonoBehaviour {
 		pIndexFingerPos = Vector3.zero;
 		pThumbFingerPos = Vector3.zero;
 
-		//_handThrowingPowerMultiplier = dataManager.handThrowingPowerMultiplier;
+		_handThrowingPowerMultiplier = dataManager.handThrowingPowerMultiplier;
 
 		context_buff = new int[context_buff_len];
 		context_dict.Add (0, "object");
@@ -94,8 +92,8 @@ public class HandManager : MonoBehaviour {
         }
 
 		/*initial all user-defined settings*/
-		//DataManager data_mngr =  GameObject.Find ("gDataManager").GetComponent<DataManager> ();
-		//palm_collider_delay = data_mngr.getPalmColliderDelay ();
+		DataManager data_mngr =  GameObject.Find ("gDataManager").GetComponent<DataManager> ();
+		palm_collider_delay = data_mngr.getPalmColliderDelay ();
 		palm.GetComponent<Rigidbody> ().maxAngularVelocity = 0;
 
         //use for disable UI for photo
@@ -116,65 +114,61 @@ public class HandManager : MonoBehaviour {
 		if (HandActionRecog.getInstance() != null && HandActionRecog.getInstance().IsMotion("OpenMenu", bIsLeftHand)) {
 			contextSwitch ("menu");
 		}
-
-		// debug line
-		currentGesture.text = (bIsLeftHand ? "left:" + Portalble.PortalbleGeneralController.main.LeftHandGesture : "right:" + Portalble.PortalbleGeneralController.main.RightHandGesture);
-
-		switch (context){
+	switch (context){
 		    case "menu":
 			    break;
 		    case "paint":
 			    break;
 		    default:
 			GameObject interact_obj = getHandObject ();
-			//if (interact_obj != null) {
-			//	cleanGuidance ();
-   //             //if hand gesture is grabbing
-   //             string cur_gesture = gestureManager.bufferedGesture();
+			if (interact_obj != null) {
+				cleanGuidance ();
+                //if hand gesture is grabbing
+                string cur_gesture = gestureManager.bufferedGesture();
                  
-			//	if (cur_gesture == "pinch" || cur_gesture == "fist") {
-			//		//grab objbect if hand is not grabbing
-			//		if (!is_grabbing) {
-			//			grabObject (interact_obj);
-			//		} else {
-			//			this.updateObjTransform (interact_obj);
-			//		}
-			//		//Debug.Log ("obj isTrigger is " + interact_obj.GetComponent<Collider>().isTrigger + "palm isTrigger is " + palm.GetComponent<Collider>().isTrigger + "palm angular v is " + palm.GetComponent<Rigidbody>().angularVelocity);
-			//	    //if hand gesture is not grabbing
-			//	} else {
-			//		//but hand is grabbing
-   //                 Transform indextip = transform.Find("index").Find("bone3");
-   //                 Transform thumbtip = transform.Find("thumb").Find("bone3");
-   //                 float index_thumb_dis = Vector3.Distance(indextip.position, thumbtip.position);
+				if (cur_gesture == "pinch" || cur_gesture == "fist") {
+					//grab objbect if hand is not grabbing
+					if (!is_grabbing) {
+						grabObject (interact_obj);
+					} else {
+						this.updateObjTransform (interact_obj);
+					}
+					//Debug.Log ("obj isTrigger is " + interact_obj.GetComponent<Collider>().isTrigger + "palm isTrigger is " + palm.GetComponent<Collider>().isTrigger + "palm angular v is " + palm.GetComponent<Rigidbody>().angularVelocity);
+				    //if hand gesture is not grabbing
+				} else {
+					//but hand is grabbing
+                    Transform indextip = transform.Find("index").Find("bone3");
+                    Transform thumbtip = transform.Find("thumb").Find("bone3");
+                    float index_thumb_dis = Vector3.Distance(indextip.position, thumbtip.position);
                     
-			//		if (is_grabbing && (cur_gesture == "palm" || index_thumb_dis > 0.04f)) {
-   //                     Debug.Log("Grab:Release Grab, current gesture:" + gestureManager.bufferedGesture());
-			//			//then tell the object to release itself, Here support two version of interaction objects.
-			//			InteractionScriptObject iso = interact_obj.GetComponent<InteractionScriptObject> ();
-			//			if (iso != null && iso.isActiveAndEnabled) {
-			//				iso.releaseSelf ();
-			//			}
-			//			else {
-			//				GrabCollider gc = interact_obj.GetComponentInChildren<GrabCollider> ();
-			//				if (gc != null)
-			//					gc.OnGrabFinished ();
-			//			}
-			//			//releaseObject (interact_obj);
-			//			CancelInvoke();
-			//		}
-   //                 else if (is_grabbing) {
-   //                     this.updateObjTransform(interact_obj);
-   //                 }
-			//	}
+					if (is_grabbing && (cur_gesture == "palm" || index_thumb_dis > 0.04f)) {
+                        Debug.Log("Grab:Release Grab, current gesture:" + gestureManager.bufferedGesture());
+						//then tell the object to release itself, Here support two version of interaction objects.
+						InteractionScriptObject iso = interact_obj.GetComponent<InteractionScriptObject> ();
+						if (iso != null && iso.isActiveAndEnabled) {
+							iso.releaseSelf ();
+						}
+						else {
+							GrabCollider gc = interact_obj.GetComponentInChildren<GrabCollider> ();
+							if (gc != null)
+								gc.OnGrabFinished ();
+						}
+						//releaseObject (interact_obj);
+						CancelInvoke();
+					}
+                    else if (is_grabbing) {
+                        this.updateObjTransform(interact_obj);
+                    }
+				}
 
-			///* nothing in hand (interactable object is null)*/
-			//} else {
-			//	if (gestureManager.bufferedGesture () == "palm")
-			//		hitObject ();
-			//	else {
-			//		cleanGuidance ();
-			//	}
-			//}
+			/* nothing in hand (interactable object is null)*/
+			} else {
+				if (gestureManager.bufferedGesture () == "palm")
+					hitObject ();
+				else {
+					cleanGuidance ();
+				}
+			}
 			break;
 		}
 		updateHandSpeed ();

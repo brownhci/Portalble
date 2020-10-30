@@ -6,30 +6,29 @@ using System.IO;
 using Accord.MachineLearning.VectorMachines;
 using Accord.Statistics.Kernels;
 using System.Runtime.InteropServices;
-
+using UnityEngine.UI;
 /* This is the gesture detection used for Portal-ble
  * Our default engine uses an open-source Accord.net
    If you prefer to integrate with Unity-OpenCV, please
    purchase it on the Unitystore*/
 
-/* merged Android and Ios */
-public class GestureControl : MonoBehaviour
-{
+    /* merged Android and Ios */
+public class GestureControl : MonoBehaviour {
 
     #region iOS SVM Import
 
-#if UNITY_IOS && !UNITY_EDITOR
+    #if UNITY_IOS && !UNITY_EDITOR
             private const string DllName = "__Internal";
-#else
-    private const string DllName = "libSVMIOS";
-#endif
+    #else
+        private const string DllName = "libSVMIOS";
+    #endif
 
     [DllImport(DllName)]
     private static extern void LoadSVM(string msg);
     [DllImport(DllName)]
     private static extern int PredictSVM(int mat_n, float[] dataArray);
     #endregion
-    
+
     //Left hand finger declare
     private GameObject palm;
 
@@ -40,86 +39,83 @@ public class GestureControl : MonoBehaviour
     bool ios_svm_model_ready;
 
     int gesture_num = 5;
-    int mat_n = 30;
+	int mat_n = 30;
 
-    //poseDetector buffer
-    int[] gesture_buff;
-    int gesture_buff_len = 5;
-    int gesture_buff_idx = 0;
-    GameObject dataMgr;
+	//poseDetector buffer
+	int[] gesture_buff;
+	int gesture_buff_len = 5;
+	int gesture_buff_idx = 0; 
+	GameObject dataMgr;
 
+    [SerializeField]
+    Text debugText;
     //Flag if it's left hand
     private bool bIsLeftHand;
 
-    //Gesture dictionary
-    Dictionary<int, string> gesture_dict = new Dictionary<int, string>();
-
+	//Gesture dictionary
+	Dictionary<int, string> gesture_dict = new Dictionary<int, string>();
+   
 
     // Use this for initialization
-    void Start()
-    {
-        dataMgr = GameObject.Find("gDataManager");
-        gesture_buff_len = dataMgr.GetComponent<DataManager>().gestBuffer;
+    void Start () {
+		dataMgr = GameObject.Find ("gDataManager");
+		gesture_buff_len = dataMgr.GetComponent<DataManager> ().gestBuffer;
 
-        palm = this.transform.GetChild(5).gameObject;
-        gesture_buff = new int[gesture_buff_len];
+        palm = this.transform.GetChild (5).gameObject;
+		gesture_buff = new int[gesture_buff_len];
 
-        //Gesture dicitonary establishes
-        gesture_dict.Add(0, "palm");
-        gesture_dict.Add(1, "pinch");
-        gesture_dict.Add(2, "paint");
-        gesture_dict.Add(3, "fist");
-        gesture_dict.Add(4, "undefined");
+		//Gesture dicitonary establishes
+		gesture_dict.Add(0, "palm");
+		gesture_dict.Add(1, "pinch");
+		gesture_dict.Add(2, "paint");
+		gesture_dict.Add(3, "fist");
+		gesture_dict.Add(4, "undefined");
 
-        HandManager hm = GetComponent<HandManager>();
+       HandManager hm = GetComponent<HandManager>();
         if (hm != null)
             bIsLeftHand = hm.bIsLeftHand;
         else
             bIsLeftHand = true;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
+	
+	// Update is called once per frame
+	void Update () {
         //Update gesture buffer array
 
-        if (svm_model != null || ios_svm_model_ready)
-        {
-            gesture_buff[gesture_buff_idx++] = gestureDetectorMLpredict();
+        if (svm_model != null || ios_svm_model_ready) {
+       		gesture_buff [gesture_buff_idx++] = gestureDetectorMLpredict ();
             gesture_buff_idx = (gesture_buff_idx) % gesture_buff_len;
-        }
+		}
 
         //Debug.Log(bufferedGesture());
-    }
+     }
 
-    void OnEnable()
-    {
-        // When OnEnable, if SVM isn't set up, set it up
-        if (svm_model == null || ios_svm_model_ready == false)
-        {
+    void OnEnable() {
+        // When OnEnable, if SVM isn't set up, set up it
+        if (svm_model == null || ios_svm_model_ready == false) {
             readSVM();
         }
     }
 
-
+  
     /* 	gestureDetectorMLpredict
 	*	Input: None
 	*	Output: None
 	*	Summary: 1. Collect current hand data 2. Generate an instant prediction for current gesture
 	*/
-
+   
 
     /* prediction android */
     private int gestureDetectorMLpredict()
     {
         /* initial satte */
-#if UNITY_IOS && !UNITY_EDITOR
+        #if UNITY_IOS && !UNITY_EDITOR
             if (!ios_svm_model_ready)
                 return 0;
-#else
-        if (svm_model == null)
-            return 0;
-#endif
+        #else
+            if (svm_model == null)
+                return 0;
+        #endif
         /* the second joints on every finger */
         Vector3[] vec_bone2 = new Vector3[5];
         /* the finger tips on every finger */
@@ -157,7 +153,7 @@ public class GestureControl : MonoBehaviour
 
         return result;
 
-
+        
     }
 
 
@@ -166,39 +162,25 @@ public class GestureControl : MonoBehaviour
 	*	Output: current active gesture (palm, paint, pinch, fist, idle)
 	*	Summary: Output mode gesture in last detector_buff_len frames to reduce noise
 	*/
-    public string bufferedGesture()
-    {
+    public string bufferedGesture(){
+		int[] gesture_hist = new int[gesture_dict.Count];
+		for (int i = 0; i < gesture_buff_len; i++) {
+			gesture_hist [gesture_buff [i]] += 1;
+		}
 
-        int[] gesture_hist = new int[gesture_dict.Count];
-        for (int i = 0; i < gesture_buff_len; i++)
-        {
-            gesture_hist[gesture_buff[i]] += 1;
-        }
-
-        int modeGesture = 0;
-        for (int i = 0; i < gesture_hist.Length; i++)
-        {
-            if (gesture_hist[i] >= gesture_hist[modeGesture])
-                modeGesture = i;
-        }
-        return gesture_dict[modeGesture];
+		int modeGesture = 0;
+		for (int i = 0; i < gesture_hist.Length; i++){
+			if (gesture_hist[i] >= gesture_hist[modeGesture])
+				modeGesture = i;
+		}
+		return gesture_dict [modeGesture];
+	}
+    
+	private void readSVM() {
+         StartCoroutine(readSVMCo());
     }
 
-    public void initializeSVM()
-    {
-        if (svm_model == null || ios_svm_model_ready == false)
-        {
-            readSVM();
-        }
-    }
-
-    private void readSVM()
-    {
-        StartCoroutine(readSVMCo());
-    }
-
-    private IEnumerator readSVMCo()
-    {
+    private IEnumerator readSVMCo() {
         Debug.Log("Start SVM coroutine");
         // for Android, we need to use UnityWeb to get access to streamingAssetsPath.
 
@@ -221,18 +203,13 @@ public class GestureControl : MonoBehaviour
         Debug.Log(svm_model.empty());*/
 
 #if UNITY_ANDROID
-        if (svm_model == null)
-        {
-            Debug.Log("svm_model == null passed");
+        if (svm_model == null) {
             using (WWW svm_reader = new WWW(System.IO.Path.Combine(Application.streamingAssetsPath, "svm")))
             {
-                Debug.Log("wololo1");
                 yield return svm_reader;
-                Debug.Log("wololo2");
                 System.IO.File.WriteAllBytes(System.IO.Path.Combine(Application.persistentDataPath, "svm"), svm_reader.bytes);
-                Debug.Log("wololo3");
                 svm_model = Accord.IO.Serializer.Load<MulticlassSupportVectorMachine<Linear>>(System.IO.Path.Combine(Application.persistentDataPath, "svm"));
-                Debug.Log("wololo4");
+                debugText.text = svm_model + "";
             }
         }
 #elif UNITY_IOS && !UNITY_EDITOR

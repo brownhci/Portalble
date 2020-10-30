@@ -43,8 +43,3 @@ library/ShaderCache/
 Library/
 ProjectSettings/EditorBuildSettings.asset
 ProjectSettings/EditorSettings.asset
-
-Assets/Plugins/Android/mp_hand_tracking_aar_v1.aar
-Assets/Plugins/Android/mp_hand_tracking_aar_v1.aar.meta
-
-*.symbols.zip
