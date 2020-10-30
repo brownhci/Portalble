@@ -1,4 +1,6 @@
- 
+#install the AAR file from here:
+https://drive.google.com/file/d/1S4TuwHTUHb5FI_tq322rqwnLG-hPa4wy/view?usp=sharing
+
 # Portalble
 Welcome to Portal-ble! This system allows you to directly manipulate virtual objects in a smartphone augmented reality (AR)
 environment with your bare hands. Current master branch is for Android only. Please see iOS branch for updates and schedules.
