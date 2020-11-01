@@ -50,12 +50,15 @@ public class Sync : MonoBehaviour {
 
 	//moving average filter
 	private Vector3[] queuePalm, queueIndex, queueThumb, queueHand;
-   
 
+    private Vector3 palmScale;
+
+    private List<string> frameList = new List<string>();
+    private int frame_idx;
 
     private int smoothingBuffer = 1;
 	private int smoothingBuffer_idx;
-  
+
     // For 1+6
     private Vector3 leapMotionOffset = new Vector3(0f, -0.04f, -0.01f);
     // For Samsung S9+
@@ -124,25 +127,25 @@ public class Sync : MonoBehaviour {
         else
             initialLeapMotionOffset = leapMotionOffset;
 
-#if UNITY_EDITOR
-        if (fromMediaPipe)
-        {
-            loadHandSkeletonFromMediaPipe();
-        }
-#endif
-
+        #if UNITY_EDITOR
+            HandSkeletonMediaPipeCache();
+        #elif !UNITY_EDITOR
+             if (fromMediaPipe)
+            {
+                loadHandSkeletonFromMediaPipe();
+            }
+        #endif
     }
 
-    private Vector3 palmScale;
-
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
         if (fromMediaPipe)
         {
             updateHandSkeletonFromMediaPipe();
         }
         else
         {
+        /* from leap motion */
             string msg = "";
             if (this.name.Contains("_l"))
             {
@@ -160,15 +163,15 @@ public class Sync : MonoBehaviour {
 
 
             // check current phone orientation
-#if UNITY_ANDROID
-        leapMotionOffset = initialLeapMotionOffset;
-        if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) {
-            leapMotionOffset += LOffset;
-        }
-        else if (Input.deviceOrientation == DeviceOrientation.LandscapeRight) {
-            leapMotionOffset += ROffset;
-        }
-#endif
+        #if UNITY_ANDROID
+            leapMotionOffset = initialLeapMotionOffset;
+            if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) {
+                leapMotionOffset += LOffset;
+            }
+            else if (Input.deviceOrientation == DeviceOrientation.LandscapeRight) {
+                leapMotionOffset += ROffset;
+            }
+        #endif
 
             /* return before any hand found */
             if (!hand_info[0].Equals(""))
@@ -177,22 +180,35 @@ public class Sync : MonoBehaviour {
             }
 
             // check current phone orientation
-#if UNITY_ANDROID
-        // before this, hand rotation is set to camera rotation. So we can just multiply it
-        if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) {
-            Quaternion rot = Quaternion.AngleAxis(90.0f, Camera.main.transform.forward);
-            transform.rotation = rot * transform.rotation;
-        }
-        else if (Input.deviceOrientation == DeviceOrientation.LandscapeRight) {
-            Quaternion rot = Quaternion.AngleAxis(-90.0f, Camera.main.transform.forward);
-            transform.rotation = rot * transform.rotation;
-        }
-#endif
+        #if UNITY_ANDROID
+            // before this, hand rotation is set to camera rotation. So we can just multiply it
+            if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) {
+                Quaternion rot = Quaternion.AngleAxis(90.0f, Camera.main.transform.forward);
+                transform.rotation = rot * transform.rotation;
+            }
+            else if (Input.deviceOrientation == DeviceOrientation.LandscapeRight) {
+                Quaternion rot = Quaternion.AngleAxis(-90.0f, Camera.main.transform.forward);
+                transform.rotation = rot * transform.rotation;
+            }
+        #endif
         }
     }
 
-    //List<string> frameList = new List<string>();
-    //int frame_idx;
+     void HandSkeletonMediaPipeCache() {
+        //print("load _pos");
+        string path = "Assets/StreamingAssets/mediapipe_landmarktest.txt";
+
+        //Read the text from directly from the test.txt file
+        StreamReader reader = new StreamReader(path);
+        string t = reader.ReadToEnd();
+        frameList = new List<string>();
+        string[] tlist = t.Split('\n');
+        for (int i = 0; i < tlist.Length; i += 1)
+        {
+            frameList.Add(tlist[i]);
+        }
+        frame_idx = 0;
+    }
 
     /* Xander, please check from here, 
      * this function takes mediapipe coordinates from a file, you 
@@ -217,12 +233,13 @@ public class Sync : MonoBehaviour {
 
     void updateHandSkeletonFromMediaPipe()
     {
-//#if UNITY_EDITOR
-//		string frame = frameList[frame_idx];
-//        string[] coords = frame.Split(';');
-//#elif UNITY_ANDROID
+#if UNITY_EDITOR
+        frame_idx++;    
+        string frame = frameList[frame_idx];
+        string[] coords = frame.Split(';');
+#elif !UNITY_EDITOR
 		string[] coords = process.GetCoords();
-//#endif
+#endif
 		Vector3[] vecs = new Vector3[coords.Length];
 		// vecshaha = vecs;
 		Vector3 te = Vector3.zero;

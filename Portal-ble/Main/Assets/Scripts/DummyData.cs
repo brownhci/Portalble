@@ -11,6 +11,8 @@ public class DummyData : MonoBehaviour
     private int idx = 0;
     private WSManager wsmanager;
     public bool DummyDataReplay = false;
+
+
     // Start is called before the first frame update
     void Start()
     {
