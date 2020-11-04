@@ -24,8 +24,10 @@ namespace Mediapipe.HandTracking.ARCore {
             {
                 //if (raycast_manager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), out_hits, TrackableType.Planes))
                 //{
+                 
                 current_pose = out_hits[0].pose;
-                current_distance = out_hits[0].distance;
+                current_distance = 0.5f;
+                //current_distance = out_hits[0].distance;
             }
         }
 

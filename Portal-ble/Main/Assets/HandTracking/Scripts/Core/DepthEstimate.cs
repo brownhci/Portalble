@@ -18,7 +18,8 @@ namespace Mediapipe.HandTracking {
         }
 
         public virtual float PredictDepth(float z_normalized) {
-            return default_depth * zoom_indicator + z_normalized * default_depth * 0.24f * zoom_indicator;
+             return default_depth * zoom_indicator + z_normalized * default_depth * 0.24f * zoom_indicator;
+            //return z_normalized * default_depth * 0.24f * zoom_indicator;
         }
 
         public virtual bool Valid() {

@@ -6,6 +6,7 @@ namespace Mediapipe.HandTracking {
 
         private float length_size;
         private Vector3[] normalize_landmarks;
+        private static Vector3[] m_normalize_landmarks;
         private Vector3[] landmarks;
         private HandRect hand_rect;
 
@@ -32,12 +33,24 @@ namespace Mediapipe.HandTracking {
         public static Hand MakeFrom(float[] arr_landmark_data, HandRect hand_rect) {
             if (null == arr_landmark_data || arr_landmark_data.Length < 63) return null;
             Vector3[] normalize_landmarks = new Vector3[21];
+            m_normalize_landmarks = new Vector3[21];
             if (LandmarkConverter.INSTANCE == null || !LandmarkConverter.INSTANCE.Valid()) return null;
-            for (int i = 0; i < 21; i++) normalize_landmarks[i] = LandmarkConverter.INSTANCE.Convert(arr_landmark_data[3 * i], arr_landmark_data[3 * i + 1], arr_landmark_data[3 * i + 2]);
+            for (int i = 0; i < 21; i++)
+            {
+                normalize_landmarks[i] = LandmarkConverter.INSTANCE.Convert(arr_landmark_data[3 * i], arr_landmark_data[3 * i + 1], arr_landmark_data[3 * i + 2]);
+                m_normalize_landmarks[i] = LandmarkConverter.INSTANCE.Convert(arr_landmark_data[3 * i], arr_landmark_data[3 * i + 1], arr_landmark_data[3 * i + 2]);
+            }
+            
             Builder builder = new Builder(DepthSetting.GetDepthEstimate());
             builder.Set(hand_rect);
             builder.Set(normalize_landmarks);
             return builder.Build();
+        }
+
+
+        /* return all the landmarks */
+        public static Vector3[] GetLandMarks() {
+            return m_normalize_landmarks;
         }
 
         private class Builder {
@@ -61,12 +74,15 @@ namespace Mediapipe.HandTracking {
             public Hand Build() {
                 this.hand.normalize_landmarks = normalize_landmarks;
 
-                // tính độ lớn bàn tay (bằng tổng đọ dài các đốt ngón tay) dưới dạng nomarlize
+
+                // visualize the landmarks
+                
+                //  Calculates the hand magnitude(by the sum of the knuckles) as normalize
                 for (int i = 0; i < 20; i++) this.hand.length_size += Vector3.Magnitude(normalize_landmarks[finger_couples[i, 1]] - normalize_landmarks[finger_couples[i, 0]]);
 
                 if (!depth_estimate.Valid()) return null;
-            
-                // yêu cầu phải tính tỉ lệ hình chiếu trước khi ước lượng độ sâu
+
+                // calculate projection ratio before estimating depth
                 depth_estimate.PredictZoomIndicator(hand_rect, this.hand.length_size);
 
                 for (int i = 0; i < 21; i++) {

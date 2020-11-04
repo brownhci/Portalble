@@ -26,6 +26,9 @@ namespace Mediapipe.HandTracking
         [SerializeField]
         Text debugText;
 
+        [SerializeField]
+        GameObject visualGizmo;
+
         private string current_coords = "0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;";
 
         string saveString = "";
@@ -33,6 +36,15 @@ namespace Mediapipe.HandTracking
         private AndroidJavaObject hand_tracking;
         private HandRect current_hand_rect;
 #endif
+
+
+        public void VisualizeNormalizedLandmarks() {
+            Vector3[] landmark = Hand.GetLandMarks();
+            for (int i = 0; i < landmark.Length; i++) {
+                GameObject gm = GameObject.Instantiate(visualGizmo);
+                gm.transform.position = landmark[i];
+            }
+        }
 
         private void Awake()
         {
@@ -60,6 +72,8 @@ namespace Mediapipe.HandTracking
 
         private void Update()
         {
+            //VisualizeNormalizedLandmarks();
+
             string text = "no hand position";
             //Debug.Log("current_hand: " + ((current_hand != null) ? current_hand.ToString() : "null"));
 
