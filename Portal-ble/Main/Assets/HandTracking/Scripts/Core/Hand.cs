@@ -111,8 +111,8 @@ namespace Mediapipe.HandTracking {
                     this.hand.landmarks[i] = Camera.main.ScreenToWorldPoint(new Vector3(
                             Screen.width * this.hand.normalize_landmarks[i].x,
                             Screen.height * this.hand.normalize_landmarks[i].y,
-                            Hand.scale * this.hand.normalize_landmarks[i].z + Hand.offset
-                            //this.depth_estimate.PredictDepth(this.hand.normalize_landmarks[i].z)
+                            //Hand.scale * this.hand.normalize_landmarks[i].z + Hand.offset
+                            this.depth_estimate.PredictDepth(this.hand.normalize_landmarks[i].z)
                         //.47f * this.hand.normalize_landmarks[i].z
                         ));
                     Hand.m_landmarks[i] = Camera.main.ScreenToWorldPoint(

@@ -37,8 +37,16 @@ namespace Mediapipe.HandTracking
         private HandRect current_hand_rect;
 #endif
 
+        private bool updateGizmos = true;
+
+        public void ToggleFreezeNormalizedLandmarks()
+        {
+            updateGizmos = !updateGizmos;
+        }
+
         public void VisualizeNormalizedLandmarks() {
             Vector3[] landmark = Hand.GetAdjustedLandmarks();
+            debugText.text = landmark[0].ToString("F4");
             for (int i = 0; i < landmark.Length; i++) {
                 visualGizmos[i].transform.position = landmark[i];
                 Debug.Log("VisualNormalizedLandmarks() - Landmark " + i + ": " + landmark[i]);
@@ -99,9 +107,12 @@ namespace Mediapipe.HandTracking
                         + System.Math.Round(current_hand.GetLandmark(i).y, 5)
                         + "," + System.Math.Round(current_hand.GetLandmark(i).z, 5) + ";";
                     //Debug.Log("debugText: " + debugText);
-                    debugText.text = tmp;
+                    
                 }
-                VisualizeNormalizedLandmarks();
+                if (updateGizmos)
+                {
+                    VisualizeNormalizedLandmarks();
+                }
                 current_coords = tmp;
                 saveString = saveString + tmp + "\n";
 
