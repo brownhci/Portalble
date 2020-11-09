@@ -45,8 +45,9 @@ namespace Mediapipe.HandTracking
         }
 
         public void VisualizeNormalizedLandmarks() {
+            return;
             Vector3[] landmark = Hand.GetAdjustedLandmarks();
-            debugText.text = landmark[0].ToString("F4");
+            //debugText.text = landmark[0].ToString("F4");
             for (int i = 0; i < landmark.Length; i++) {
                 visualGizmos[i].transform.position = landmark[i];
                 Debug.Log("VisualNormalizedLandmarks() - Landmark " + i + ": " + landmark[i]);
@@ -98,7 +99,7 @@ namespace Mediapipe.HandTracking
             {
                 Vector3 v3 = current_hand.Position;
                 //Debug.Log("v3: " + ((v3 != null) ? v3.ToString() : "null"));
-                text = "hand position: (" + v3.x + ", " + v3.y + ", " + v3.z + ")";
+                //text = "hand position: (" + v3.x + ", " + v3.y + ", " + v3.z + ")";
                 string tmp = "";
                 for (int i = 0; i < current_hand.GetLandmarks().Length; i++)
                 {
@@ -168,7 +169,7 @@ namespace Mediapipe.HandTracking
                 // Hand new_hand = Hand.MakeFrom(hand_landmarks_data, current_hand_rect);
                 // if (null == current_hand) current_hand = new_hand;
                 // else current_hand = Hand.DeVibrate(current_hand, new_hand);
-                current_hand = Hand.MakeFrom(hand_landmarks_data, current_hand_rect);
+                current_hand = Hand.MakeFrom(hand_landmarks_data, current_hand_rect, debugText);
 
 
             }

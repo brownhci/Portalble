@@ -40,6 +40,10 @@ public class Sync : MonoBehaviour {
 	private GameObject l_finger4_bone1;
 	private GameObject l_finger4_bone2;
 
+    [SerializeField]
+    private GameObject[] Gizmo;
+   
+
     private Transform l_arm;
     private GameObject finger;
 	private GameObject bone;
@@ -47,9 +51,9 @@ public class Sync : MonoBehaviour {
     private string actv_hand;
 
     private IKalmanWrapper kalmanPalm,kalmanIndex,kalmanThumb,kalmanHand;
-
-	//moving average filter
-	private Vector3[] queuePalm, queueIndex, queueThumb, queueHand;
+    private IKalmanWrapper[] mKalmanFilter;
+    //moving average filter
+    private Vector3[] queuePalm, queueIndex, queueThumb, queueHand;
 
     private Vector3 palmScale;
 
@@ -98,8 +102,9 @@ public class Sync : MonoBehaviour {
 		l_finger4_bone2 = l_finger4.transform.GetChild (2).gameObject;
 
         l_arm = transform.Find("arm");
+        
 
-		kalmanPalm = new MatrixKalmanWrapper ();
+        kalmanPalm = new MatrixKalmanWrapper ();
 		kalmanIndex = new MatrixKalmanWrapper ();
 		kalmanThumb = new MatrixKalmanWrapper ();
 		kalmanHand = new MatrixKalmanWrapper ();
@@ -120,6 +125,9 @@ public class Sync : MonoBehaviour {
 
         palmScale = l_palm.transform.localScale;
 
+        mKalmanFilter = new IKalmanWrapper[22];
+        for (int i = 0; i < 22; i++)
+            mKalmanFilter[i] = new MatrixKalmanWrapper();
         //check
         Debug.Log("Sync check hand." + GlobalStates.globalConfigFile.Available);
         if (GlobalStates.globalConfigFile.Available)
@@ -255,6 +263,9 @@ public class Sync : MonoBehaviour {
 			vecs[j] = te;
 		}
 
+        for (int i = 0; i < vecs.Length; i++)
+            vecs[i] = mKalmanFilter[i].Update(vecs[i]);
+
 		Vector3 dir00 = vecs[2] - vecs[1];
         Vector3 dir01 = vecs[3] - vecs[2];
         Vector3 dir02 = vecs[4] - vecs[3];
@@ -305,14 +316,25 @@ public class Sync : MonoBehaviour {
         l_finger4_bone2.transform.localPosition = vecs[20];
         l_finger4_bone2.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir42);
 
-        // vecs[0] + vecs[5] + vecs[17]
-        l_palm.transform.localPosition = (vecs[0] + vecs[5] + vecs[17]) / 3 ;
+
+        Gizmo[0].transform.position = vecs[0];
+        Gizmo[1].transform.position = vecs[5];
+        Gizmo[2].transform.position = vecs[17];
+
+        
+        l_palm.transform.position = (vecs[0] + vecs[5] + vecs[17]) / 3 ;
+
+        
+
         Vector3 vec1 = vecs[5] - vecs[0];
         Vector3 vec2 = vecs[17] - vecs[0];
-        Vector3 palm_norm = Vector3.Cross(vec1, vec2);
+        Vector3 f = Vector3.Cross(vec1, vec2);
+        Vector3 up = vec1 + vec2;
+        l_palm.transform.LookAt(l_palm.transform.position + Vector3.Normalize(f), Vector3.Normalize(up));
 
-        l_palm.transform.localRotation = Quaternion.FromToRotation(Vector3.forward, palm_norm);
-        l_palm.transform.localScale = palmScale * 1.15f;
+       
+        // l_palm.transform.localRotation = Quaternion.FromToRotation(Vector3.forward, palm_norm);
+        //l_palm.transform.localScale = palmScale * 1.15f;
         //frame_idx++;
 
     }

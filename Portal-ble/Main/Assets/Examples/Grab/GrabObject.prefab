@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 7741c3c35fbfa394d84490191937ac38, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,9 +125,9 @@ MonoBehaviour:
   m_initialLock: 0
   m_selectedOutlineColor: {r: 0, g: 1, b: 0.10895181, a: 0}
   m_grabbedOutlineColor: {r: 0, g: 0.24048328, b: 1, a: 0}
-  m_useOutlineMaterial: 1
+  m_useOutlineMaterial: 0
   m_selectedMaterial: {fileID: 2100000, guid: d4dcff38c4c58624ebf541cb3cf8825f, type: 2}
-  m_grabbedMaterial: {fileID: 0}
+  m_grabbedMaterial: {fileID: 2100000, guid: 7741c3c35fbfa394d84490191937ac38, type: 2}
   m_throwPower: 5
 --- !u!1 &6968784813298600827
 GameObject:

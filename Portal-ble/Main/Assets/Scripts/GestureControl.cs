@@ -83,7 +83,8 @@ public class GestureControl : MonoBehaviour {
         //Update gesture buffer array
 
         if (svm_model != null || ios_svm_model_ready) {
-       		gesture_buff [gesture_buff_idx++] = gestureDetectorMLpredict ();
+             debugText.text = gesture_dict[gestureDetectorMLpredict()];
+            gesture_buff [gesture_buff_idx++] = gestureDetectorMLpredict ();
             gesture_buff_idx = (gesture_buff_idx) % gesture_buff_len;
 		}
 

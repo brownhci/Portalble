@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657838, g: 0.49641234, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3284,7 +3284,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1534212061388030, guid: 0420d8154c64d3f4aa2799922c2fe45e, type: 3}
       propertyPath: m_Name
-      value: stroke_sphere_picker_3 1 (2)
+      value: stroke_17
       objectReference: {fileID: 0}
     - target: {fileID: 4061697197262524, guid: 0420d8154c64d3f4aa2799922c2fe45e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6556,7 +6556,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1534212061388030, guid: 0420d8154c64d3f4aa2799922c2fe45e, type: 3}
       propertyPath: m_Name
-      value: stroke_sphere_picker_3 1
+      value: stroke_0
       objectReference: {fileID: 0}
     - target: {fileID: 4061697197262524, guid: 0420d8154c64d3f4aa2799922c2fe45e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9320,7 +9320,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1534212061388030, guid: 0420d8154c64d3f4aa2799922c2fe45e, type: 3}
       propertyPath: m_Name
-      value: stroke_sphere_picker_3 1 (1)
+      value: stroke_5
       objectReference: {fileID: 0}
     - target: {fileID: 4061697197262524, guid: 0420d8154c64d3f4aa2799922c2fe45e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9751,7 +9751,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1614409307}
-  - component: {fileID: 1614409305}
   - component: {fileID: 1614409304}
   - component: {fileID: 1614409303}
   - component: {fileID: 1614409306}
@@ -9790,27 +9789,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugText: {fileID: 713935290}
---- !u!114 &1614409305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1614409302}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05df0e4147c47a7489d229094ce419c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  highlightSphere: {fileID: 0}
-  m_PaintDwellBar: {fileID: 0}
-  isMultimodal: 0
-  paintPlane_Prefab: {fileID: 0}
-  materialPrototypes:
-  - {fileID: 2100000, guid: 52c992b288e16f64a8ac2ccf28093f4c, type: 2}
-  - {fileID: 2100000, guid: cbaaf44db5d1af24685052651371ec6b, type: 2}
-  - {fileID: 2100000, guid: a0631de1075036b4580b0c788a584166, type: 2}
-  currentColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &1614409306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9825,6 +9803,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fromMediaPipe: 1
   process: {fileID: 1394066869}
+  Gizmo:
+  - {fileID: 1071914685}
+  - {fileID: 1572065219}
+  - {fileID: 408964927}
 --- !u!4 &1614409307
 Transform:
   m_ObjectHideFlags: 0
@@ -11863,6 +11845,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fromMediaPipe: 1
   process: {fileID: 0}
+  Gizmo: []
 --- !u!4 &1949621245
 Transform:
   m_ObjectHideFlags: 0
@@ -12163,7 +12146,7 @@ Transform:
   m_GameObject: {fileID: 2035928329}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.0858, y: -0.0165, z: -0.0164}
-  m_LocalScale: {x: 0.06, y: 0.06, z: 0.01}
+  m_LocalScale: {x: 0.12, y: 0.12, z: 0.01}
   m_Children:
   - {fileID: 1035234630}
   m_Father: {fileID: 1614409307}
