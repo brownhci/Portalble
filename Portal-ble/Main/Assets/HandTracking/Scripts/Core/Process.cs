@@ -26,8 +26,8 @@ namespace Mediapipe.HandTracking
         [SerializeField]
         Text debugText;
 
-        [SerializeField]
-        GameObject[] visualGizmos;
+        //[SerializeField]
+        //GameObject[] visualGizmos;
 
         private string current_coords = "0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;";
 
@@ -37,32 +37,32 @@ namespace Mediapipe.HandTracking
         private HandRect current_hand_rect;
 #endif
 
-        private bool updateGizmos = true;
+        //private bool updateGizmos = true;
 
-        public void ToggleFreezeNormalizedLandmarks()
-        {
-            updateGizmos = !updateGizmos;
-        }
+        //public void ToggleFreezeNormalizedLandmarks()
+        //{
+        //    updateGizmos = !updateGizmos;
+        //}
 
-        public void VisualizeNormalizedLandmarks() {
-            return;
-            Vector3[] landmark = Hand.GetAdjustedLandmarks();
-            //debugText.text = landmark[0].ToString("F4");
-            for (int i = 0; i < landmark.Length; i++) {
-                visualGizmos[i].transform.position = landmark[i];
-                Debug.Log("VisualNormalizedLandmarks() - Landmark " + i + ": " + landmark[i]);
-            }
-        }
+        //public void VisualizeNormalizedLandmarks() {
+        //    return;
+        //    Vector3[] landmark = Hand.GetAdjustedLandmarks();
+        //    //debugText.text = landmark[0].ToString("F4");
+        //    for (int i = 0; i < landmark.Length; i++) {
+        //        visualGizmos[i].transform.position = landmark[i];
+        //        Debug.Log("VisualNormalizedLandmarks() - Landmark " + i + ": " + landmark[i]);
+        //    }
+        //}
 
-        public void SetHandScale(System.Single f)
-        {
-            Hand.SetScale(f);
-        }
+        //public void SetHandScale(System.Single f)
+        //{
+        //    Hand.SetScale(f);
+        //}
 
-        public void SetHandOffset(System.Single f)
-        {
-            Hand.SetOffset(f);
-        }
+        //public void SetHandOffset(System.Single f)
+        //{
+        //    Hand.SetOffset(f);
+        //}
 
 
         private void Awake()
@@ -110,10 +110,10 @@ namespace Mediapipe.HandTracking
                     //Debug.Log("debugText: " + debugText);
                     
                 }
-                if (updateGizmos)
-                {
-                    VisualizeNormalizedLandmarks();
-                }
+                //if (updateGizmos)
+                //{
+                //    VisualizeNormalizedLandmarks();
+                //}
                 current_coords = tmp;
                 saveString = saveString + tmp + "\n";
 

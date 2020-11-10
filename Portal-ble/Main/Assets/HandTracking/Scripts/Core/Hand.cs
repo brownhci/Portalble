@@ -8,9 +8,8 @@ namespace Mediapipe.HandTracking {
  
         private float length_size;
         private Vector3[] normalize_landmarks;
-        private static Vector3[] m_normalize_landmarks;
         private Vector3[] landmarks;
-        private static Vector3[] m_landmarks;
+        //private static Vector3[] m_landmarks;
         private HandRect hand_rect;
  
 
@@ -41,19 +40,17 @@ namespace Mediapipe.HandTracking {
         public static Hand MakeFrom(float[] arr_landmark_data, HandRect hand_rect, Text mtext) {
             if (null == arr_landmark_data || arr_landmark_data.Length < 63) return null;
             Vector3[] normalize_landmarks = new Vector3[21];
-            m_normalize_landmarks = new Vector3[21];
             if (LandmarkConverter.INSTANCE == null || !LandmarkConverter.INSTANCE.Valid()) return null;
             for (int i = 0; i < 21; i++)
             {
                 normalize_landmarks[i] = LandmarkConverter.INSTANCE.Convert(arr_landmark_data[3 * i], arr_landmark_data[3 * i + 1], arr_landmark_data[3 * i + 2]);
-                m_normalize_landmarks[i] = LandmarkConverter.INSTANCE.Convert(arr_landmark_data[3 * i], arr_landmark_data[3 * i + 1], arr_landmark_data[3 * i + 2]);
             }
 
 
             if (ARCamera == null)
                 ARCamera = GameObject.Find("AR Camera").GetComponent<Camera>();
 
-            mtext.text = "z: " + m_normalize_landmarks[3].z + ", nz:" + (ARCamera.transform.position.z - m_normalize_landmarks[3].z);
+            mtext.text = "z: " + normalize_landmarks[3].z + ", nz:" + (ARCamera.transform.position.z - normalize_landmarks[3].z);
 
 
             Builder builder = new Builder(DepthSetting.GetDepthEstimate());
@@ -62,28 +59,21 @@ namespace Mediapipe.HandTracking {
             return builder.Build();
         }
 
+        ///* return all the landmarks */
+        //public static Vector3[] GetAdjustedLandmarks()
+        //{
+        //    return m_landmarks;
+        //}
 
-        /* return all the landmarks */
-        public static Vector3[] GetNormalizedLandmarks()
-        {
-            return m_normalize_landmarks;
-        }
+        //public static void SetScale(float f)
+        //{
+        //    scale = f;
+        //}
 
-        /* return all the landmarks */
-        public static Vector3[] GetAdjustedLandmarks()
-        {
-            return m_landmarks;
-        }
-
-        public static void SetScale(float f)
-        {
-            scale = f;
-        }
-
-        public static void SetOffset(float f)
-        {
-            offset = f;
-        }
+        //public static void SetOffset(float f)
+        //{
+        //    offset = f;
+        //}
 
 
         private class Builder {
@@ -107,7 +97,7 @@ namespace Mediapipe.HandTracking {
 
             public Hand Build() {
                 this.hand.normalize_landmarks = normalize_landmarks;
-                Hand.m_landmarks = new Vector3[21];
+                //Hand.m_landmarks = new Vector3[21];
               
                 
 
@@ -125,20 +115,15 @@ namespace Mediapipe.HandTracking {
                     this.hand.landmarks[i] = Camera.main.ScreenToWorldPoint(new Vector3(
                             Screen.width * this.hand.normalize_landmarks[i].x,
                             Screen.height * this.hand.normalize_landmarks[i].y,
-                             //Hand.scale * this.hand.normalize_landmarks[i].z + Hand.offset
-                             this.depth_estimate.PredictDepth(this.hand.normalize_landmarks[i].z)
-                            // this.hand.normalize_landmarks[i].z + 0.33f
-                            // Hand.scale * (this.hand.normalize_landmarks[i].z + Hand.offset)
-                        //.47f * this.hand.normalize_landmarks[i].z
+                            this.depth_estimate.PredictDepth(this.hand.normalize_landmarks[i].z)
                         ));
 
-                    Hand.m_landmarks[i] = Camera.main.ScreenToWorldPoint(
-                        new Vector3(
-                            Screen.width * this.hand.normalize_landmarks[i].x,
-                            Screen.height * this.hand.normalize_landmarks[i].y,
-                            //this.depth_estimate.PredictDepth(this.hand.normalize_landmarks[i].z)
-                            Hand.scale * (this.hand.normalize_landmarks[i].z + Hand.offset)
-                        ));
+                    //Hand.m_landmarks[i] = Camera.main.ScreenToWorldPoint(
+                    //    new Vector3(
+                    //        Screen.width * this.hand.normalize_landmarks[i].x,
+                    //        Screen.height * this.hand.normalize_landmarks[i].y,
+                    //        Hand.scale * (this.hand.normalize_landmarks[i].z + Hand.offset)
+                    //    ));
                 }
 
                 this.hand.Position = this.hand.landmarks[0];

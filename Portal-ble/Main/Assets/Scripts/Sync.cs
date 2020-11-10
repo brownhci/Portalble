@@ -9,8 +9,11 @@ using System;
 /* it does not deals with gesture  */
 
 public class Sync : MonoBehaviour {
-    public bool fromMediaPipe = true;
-	public Mediapipe.HandTracking.Process process;
+    
+	[SerializeField]
+	Mediapipe.HandTracking.Process process;
+	public bool fromMediaPipe = true;
+
 	//private WSManager ws;
 	//private DataManager dataManager;
 	private GameObject l_palm;
@@ -40,10 +43,6 @@ public class Sync : MonoBehaviour {
 	private GameObject l_finger4_bone1;
 	private GameObject l_finger4_bone2;
 
-    [SerializeField]
-    private GameObject[] Gizmo;
-   
-
     private Transform l_arm;
     private GameObject finger;
 	private GameObject bone;
@@ -62,6 +61,7 @@ public class Sync : MonoBehaviour {
 
     private int smoothingBuffer = 1;
 	private int smoothingBuffer_idx;
+	private static bool enableKalmanFilter = true;
 
     // For 1+6
     private Vector3 leapMotionOffset = new Vector3(0f, -0.04f, -0.01f);
@@ -263,8 +263,11 @@ public class Sync : MonoBehaviour {
 			vecs[j] = te;
 		}
 
-        for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = mKalmanFilter[i].Update(vecs[i]);
+		if (enableKalmanFilter)
+        {
+			for (int i = 0; i < vecs.Length; i++)
+				vecs[i] = mKalmanFilter[i].Update(vecs[i]);
+		}
 
 		Vector3 dir00 = vecs[2] - vecs[1];
         Vector3 dir01 = vecs[3] - vecs[2];
@@ -315,11 +318,6 @@ public class Sync : MonoBehaviour {
         l_finger4_bone1.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir41);
         l_finger4_bone2.transform.localPosition = vecs[20];
         l_finger4_bone2.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir42);
-
-
-        Gizmo[0].transform.position = vecs[0];
-        Gizmo[1].transform.position = vecs[5];
-        Gizmo[2].transform.position = vecs[17];
 
         
         l_palm.transform.position = (vecs[0] + vecs[5] + vecs[17]) / 3 ;
@@ -582,7 +580,13 @@ public class Sync : MonoBehaviour {
 		return average / smoothingBuffer;
 	}
 
-    public Vector3 InitialHandOffset {
+	public static bool ToggleKalmanFilter()
+	{
+		enableKalmanFilter = !enableKalmanFilter;
+		return enableKalmanFilter;
+	}
+
+	public Vector3 InitialHandOffset {
         get {
             return initialLeapMotionOffset;
         }

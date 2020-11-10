@@ -15,6 +15,8 @@ public class UIController : MonoBehaviour {
     public GameObject m_startButton;
     public GameObject m_endButton;
 
+    public GameObject m_toggleSmoothingButton;
+
     //bools
     private bool m_show = true;
     private bool m_GCP_show = false;
@@ -33,6 +35,14 @@ public class UIController : MonoBehaviour {
         m_start_show = !m_start_show;
         m_endButton.SetActive(!m_start_show);
         m_startButton.SetActive(m_start_show);
+    }
+
+    public void ToggleSmoothing()
+    {
+        Text t = m_toggleSmoothingButton.GetComponentInChildren<Text>();
+
+        // Toggle Kalman filter. Change button text accordingly.
+        t.text = Sync.ToggleKalmanFilter() ? "Smoothing ON" : "Smoothing OFF";
     }
 
 
