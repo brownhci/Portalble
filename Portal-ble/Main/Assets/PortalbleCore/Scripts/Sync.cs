@@ -5,8 +5,8 @@ using Kalman;
 using System.Linq;
 using System.IO;
 using System;
-/* sync only get information from Leap */
-/* it does not deals with gesture  */
+/* Sync only deals with output from MediaPipe */
+/* it does not deal with gestures  */
 
 public class Sync : MonoBehaviour {
     
@@ -204,7 +204,7 @@ public class Sync : MonoBehaviour {
 
      void HandSkeletonMediaPipeCache() {
         //print("load _pos");
-        string path = "Assets/StreamingAssets/mediapipe_landmarktest.txt";
+        string path = "Assets/StreamingAssets/mediapipe-landmarks-raw.txt";
 
         //Read the text from directly from the test.txt file
         StreamReader reader = new StreamReader(path);
@@ -224,19 +224,6 @@ public class Sync : MonoBehaviour {
     void loadHandSkeletonFromMediaPipe()
     {
 		process.LoadHandSkeletonFromMediaPipe();
-        //print("load _pos");
-        //string path = "Assets/StreamingAssets/mediapipe-landmarks.txt";
-
-        ////Read the text from directly from the test.txt file
-        //StreamReader reader = new StreamReader(path);
-        //string t = reader.ReadToEnd();
-        //frameList = new List<string>();
-        //string[] tlist = t.Split('\n');
-        //for (int i = 0; i < tlist.Length; i += 1)
-        //{
-        //    frameList.Add(tlist[i]);
-        //}
-        //frame_idx = 0;
     }
 
     void updateHandSkeletonFromMediaPipe()
@@ -249,7 +236,6 @@ public class Sync : MonoBehaviour {
 		string[] coords = process.GetCoords();
 #endif
 		Vector3[] vecs = new Vector3[coords.Length];
-		// vecshaha = vecs;
 		Vector3 te = Vector3.zero;
 		for (int j = 0; j < coords.Length; j += 1)
 		{
@@ -333,7 +319,6 @@ public class Sync : MonoBehaviour {
        
         // l_palm.transform.localRotation = Quaternion.FromToRotation(Vector3.forward, palm_norm);
         //l_palm.transform.localScale = palmScale * 1.15f;
-        //frame_idx++;
 
     }
 

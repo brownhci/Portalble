@@ -26,12 +26,13 @@ namespace Mediapipe.HandTracking
         [SerializeField]
         Text debugText;
 
-        //[SerializeField]
-        //GameObject[] visualGizmos;
+        [SerializeField]
+        GameObject[] visualGizmos;
 
         private string current_coords = "0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;";
 
         string saveString = "";
+        string rawSaveString = "";
 #if UNITY_ANDROID
         private AndroidJavaObject hand_tracking;
         private HandRect current_hand_rect;
@@ -54,15 +55,26 @@ namespace Mediapipe.HandTracking
         //    }
         //}
 
-        //public void SetHandScale(System.Single f)
-        //{
-        //    Hand.SetScale(f);
-        //}
+        public void VisualizeRawLandmarks()
+        {
+            Vector3[] landmark = Hand.GetLandmarksFromRaw();
+            //debugText.text = landmark[0].ToString("F4");
+            for (int i = 0; i < landmark.Length; i++)
+            {
+                visualGizmos[i].transform.position = landmark[i];
+                Debug.Log("VisualizeRawLandmarks() - Landmark " + i + ": " + landmark[i]);
+            }
+        }
 
-        //public void SetHandOffset(System.Single f)
-        //{
-        //    Hand.SetOffset(f);
-        //}
+        public void SetHandScale(System.Single f)
+        {
+            Hand.SetScale(f);
+        }
+
+        public void SetHandOffset(System.Single f)
+        {
+            Hand.SetOffset(f);
+        }
 
 
         private void Awake()
@@ -101,21 +113,28 @@ namespace Mediapipe.HandTracking
                 //Debug.Log("v3: " + ((v3 != null) ? v3.ToString() : "null"));
                 //text = "hand position: (" + v3.x + ", " + v3.y + ", " + v3.z + ")";
                 string tmp = "";
+                string raw = "";
+                Vector3[] raws = Hand.GetLandmarksFromRaw();
                 for (int i = 0; i < current_hand.GetLandmarks().Length; i++)
                 {
                     //Debug.Log(current_hand.GetLandmarks());
                     tmp = tmp + System.Math.Round(current_hand.GetLandmark(i).x, 5) + ","
                         + System.Math.Round(current_hand.GetLandmark(i).y, 5)
                         + "," + System.Math.Round(current_hand.GetLandmark(i).z, 5) + ";";
+
+                    raw = raw + System.Math.Round(raws[i].x, 5) + ","
+                        + System.Math.Round(raws[i].y, 5)
+                        + "," + System.Math.Round(raws[i].z, 5) + ";";
                     //Debug.Log("debugText: " + debugText);
-                    
+
                 }
                 //if (updateGizmos)
                 //{
-                //    VisualizeNormalizedLandmarks();
+                //VisualizeRawLandmarks();
                 //}
                 current_coords = tmp;
                 saveString = saveString + tmp + "\n";
+                rawSaveString = rawSaveString + raw + "\n";
 
                 //ScreenLog.INSTANCE.Log(hand_log_id, text);
             }
@@ -124,6 +143,7 @@ namespace Mediapipe.HandTracking
         public void save()
         {
             System.IO.File.WriteAllText(System.IO.Path.Combine(Application.persistentDataPath, "mediapipe-landmarks" + DateTime.Now.ToString("yyyy''MM''dd''HH''mm") + ".txt"), saveString);
+            System.IO.File.WriteAllText(System.IO.Path.Combine(Application.persistentDataPath, "mediapipe-landmarks-raw" + DateTime.Now.ToString("yyyy''MM''dd''HH''mm") + ".txt"), rawSaveString);
         }
 
 #if UNITY_EDITOR

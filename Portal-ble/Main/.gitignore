@@ -38,6 +38,7 @@ sysinfo.txt
 
 Assets/OpenCVForUnity/
 Assets/OpenCVForUnity/*
+*mp_hand_tracking_aar_v1.aar*
 library/metadata/
 library/ShaderCache/
 Library/

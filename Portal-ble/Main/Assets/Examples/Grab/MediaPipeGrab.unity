@@ -7086,6 +7086,7 @@ MonoBehaviour:
   orientation: 0
   frame_input_manager: {fileID: 82729518}
   debugText: {fileID: 1812007423}
+  visualGizmos: []
 --- !u!4 &1394066870
 Transform:
   m_ObjectHideFlags: 0

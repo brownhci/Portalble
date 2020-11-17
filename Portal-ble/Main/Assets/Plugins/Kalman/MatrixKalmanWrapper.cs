@@ -24,11 +24,17 @@ namespace Kalman {
 			H : factor of measured value to real value
 			R : environment noise
 			*/
-			var f = new Matrix (new[,] {{1.0, 1}, {0, 1.0}});
+			var f = new Matrix (new[,] {
+				{1.0,	2.5},
+				{0,		1.0}
+			});
 			var b = new Matrix (new[,] {{0.0}, {0}});
 			var u = new Matrix (new[,] {{0.0}, {0}});
 			var r = Matrix.CreateVector (10);
-			var q = new Matrix (new[,] {{0.01, 0.4}, {0.1, 0.02}});
+			var q = new Matrix (new[,] {
+				{0.01,	0.4},
+				{0.1,	0.02}
+			});
 			var h = new Matrix (new[,] {{1.0 , 0}});
 			
 			kX = makeKalmanFilter (f, b, u, q, h, r);
