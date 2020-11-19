@@ -204,7 +204,7 @@ public class Sync : MonoBehaviour {
 
      void HandSkeletonMediaPipeCache() {
         //print("load _pos");
-        string path = "Assets/StreamingAssets/mediapipe-landmarks-raw.txt";
+        string path = "Assets/StreamingAssets/mediapipe-landmarks.txt";
 
         //Read the text from directly from the test.txt file
         StreamReader reader = new StreamReader(path);
