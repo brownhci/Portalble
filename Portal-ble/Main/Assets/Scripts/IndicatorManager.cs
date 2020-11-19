@@ -33,7 +33,7 @@ namespace Portalble {
             public bool useSound;
 
             public DI_CONFIG() {
-                useSphereText = false;
+                useSphereText = true; // default to indicator on
                 useLine = false;
                 useSound = false;
             }
@@ -54,6 +54,12 @@ namespace Portalble {
             m_trackingObjects = new Dictionary<Collider, IDistanceIndicator>();
 
             m_configs = new DI_CONFIG();
+
+            GlobalStates.isIndicatorEnabled = m_configs.useSphereText;
+            foreach (IDistanceIndicator di in m_indicators)
+            {
+                di.UpdateConfig(m_configs);
+            }
         }
 
         // Update is called once per frame
