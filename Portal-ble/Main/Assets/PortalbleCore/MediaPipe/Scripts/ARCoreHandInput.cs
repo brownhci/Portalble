@@ -12,13 +12,14 @@ namespace Mediapipe.HandTracking.ARCore {
         private ARCameraManager camera_manager = null;
 
         public unsafe override FrameInput GetFrameInput() {
-            XRCameraImage image;
+            XRCpuImage image;
             if (!camera_manager.TryGetLatestImage(out image)) {
                 Debug.Log("Cant get image");
                 return null;
             }
 
-            var conversion_params = new XRCameraImageConversionParams {
+            var conversion_params = new XRCpuImage.ConversionParams
+            {
                 // Get the entire image
                 inputRect = new RectInt(0, 0, image.width, image.height),
 
@@ -29,7 +30,7 @@ namespace Mediapipe.HandTracking.ARCore {
                 outputFormat = TextureFormat.RGBA32,
 
                 // Flip across the vertical axis (mirror image)
-                transformation = CameraImageTransformation.MirrorY
+                transformation = XRCpuImage.Transformation.MirrorY
             };
 
             int size = image.GetConvertedDataSize(conversion_params);

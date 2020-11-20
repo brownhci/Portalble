@@ -229,7 +229,9 @@ public class Sync : MonoBehaviour {
     void updateHandSkeletonFromMediaPipe()
     {
 #if UNITY_EDITOR
-        frame_idx++;    
+        frame_idx++;
+        if (frame_idx > (frameList.Count() - 1))
+            frame_idx = 0;
         string frame = frameList[frame_idx];
         string[] coords = frame.Split(';');
 #elif !UNITY_EDITOR
