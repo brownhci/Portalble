@@ -7,15 +7,18 @@ namespace Mediapipe.HandTracking {
 
  
         private float length_size;
-        private Vector3[] normalize_landmarks;
+        private Vector3[] normalizedLandmarks;
         private Vector3[] landmarks;
-        private Vector3[] raw_landmarks;
+        private Vector3[] rawLandmarks;
         //private static Vector3[] m_landmarks;
-        private static Vector3[] m_arr_landmarks;
+        private static Vector3[] mArrLandmarks;
         private HandRect hand_rect;
+
+        // delete when done using
+        private static Text mDebugText;
  
 
-        private static float scale = 1, offset = 0;
+        private static float scale = 1f, offset = 0.33f;
 
         public Vector3 Position { get; private set; }
         public Vector3 GetLandmark(int index) => this.landmarks[index];
@@ -26,7 +29,7 @@ namespace Mediapipe.HandTracking {
 
         private Hand() {
             this.length_size = 0;
-            this.normalize_landmarks = null;
+            this.normalizedLandmarks = null;
             this.landmarks = null;
         }
 
@@ -56,10 +59,11 @@ namespace Mediapipe.HandTracking {
             if (ARCamera == null)
                 ARCamera = GameObject.Find("AR Camera").GetComponent<Camera>();
 
-            mtext.text = "z: " + normalize_landmarks[3].z + ", nz:" + (ARCamera.transform.position.z - normalize_landmarks[3].z);
-
+            Hand.mDebugText = mtext;
+            //mtext.text = "z: " + normalize_landmarks[3].z + ", nz:" + (ARCamera.transform.position.z - normalize_landmarks[3].z);
 
             Builder builder = new Builder(DepthSetting.GetDepthEstimate());
+             
             builder.Set(hand_rect);
             builder.Set(normalize_landmarks);
             builder.SetRawLandmarks(raw_landmarks);
@@ -69,7 +73,7 @@ namespace Mediapipe.HandTracking {
         /* return all the landmarks */
         public static Vector3[] GetLandmarksFromRaw()
         {
-            return m_arr_landmarks;
+            return mArrLandmarks;
         }
 
         ///* return all the landmarks */
@@ -93,60 +97,96 @@ namespace Mediapipe.HandTracking {
             // define các cặp điểm đốt ngón tay.
             private static int[,] finger_couples = { { 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 4 }, { 0, 5 }, { 5, 6 }, { 6, 7 }, { 7, 8 }, { 0, 9 }, { 9, 10 }, { 10, 11 }, { 11, 12 }, { 0, 13 }, { 13, 14 }, { 14, 15 }, { 15, 16 }, { 0, 17 }, { 17, 18 }, { 18, 19 }, { 19, 20 } };
 
-            private DepthEstimate depth_estimate;
+            private DepthEstimate depthEstimate;
             private Hand hand;
-            private HandRect hand_rect;
-            private Vector3[] normalize_landmarks;
-            private Vector3[] raw_landmarks;
+            private HandRect handRect;
+            private Vector3[] normalizedLandmarks;
+            private Vector3[] rawLandmarks;
+            private bool depthEstimateReady = false;
 
-
-            public Builder(DepthEstimate depth_estimate) {
-                this.depth_estimate = depth_estimate;
+            // Overloaded constructor for when no depth_estimate is ready yet
+            public Builder()
+            {
                 this.hand = new Hand();
                 this.hand.landmarks = new Vector3[21];
-                Hand.m_arr_landmarks = new Vector3[21];
+                Hand.mArrLandmarks = new Vector3[21];
             }
 
-            public void Set(HandRect hand_rect) => this.hand_rect = hand_rect;
-            public void Set(Vector3[] normalize_landmarks) => this.normalize_landmarks = normalize_landmarks;
-            public void SetRawLandmarks(Vector3[] raw) => this.raw_landmarks = raw;
+            public Builder(DepthEstimate depthEstimate) {
+                this.depthEstimateReady = true;
+                this.depthEstimate = depthEstimate;
+                this.hand = new Hand();
+                this.hand.landmarks = new Vector3[21];
+                Hand.mArrLandmarks = new Vector3[21];
+            }
+
+            public void Set(HandRect handRect) => this.handRect = handRect;
+            public void Set(Vector3[] normalizedLandmarks) => this.normalizedLandmarks = normalizedLandmarks;
+            public void SetRawLandmarks(Vector3[] raw) => this.rawLandmarks = raw;
 
             public Hand Build() {
-                this.hand.normalize_landmarks = normalize_landmarks;
-                this.hand.raw_landmarks = raw_landmarks;
+                this.hand.normalizedLandmarks = normalizedLandmarks;
+                this.hand.rawLandmarks = rawLandmarks;
                 //Hand.m_landmarks = new Vector3[21];
                 // visualize the landmarks
 
                 //  Calculates the hand magnitude(by the sum of the knuckles) as normalize
-                for (int i = 0; i < 20; i++) this.hand.length_size += Vector3.Magnitude(normalize_landmarks[finger_couples[i, 1]] - normalize_landmarks[finger_couples[i, 0]]);
+                for (int i = 0; i < 20; i++) this.hand.length_size += Vector3.Magnitude(normalizedLandmarks[finger_couples[i, 1]] - normalizedLandmarks[finger_couples[i, 0]]);
+
+                // If plane has already been detected
+                if (depthEstimate.Valid())
+                {
+
+                    // calculate projection ratio before estimating depth
+                    depthEstimate.PredictZoomIndicator(handRect, this.hand.length_size);
+
+                    for (int i = 0; i < 21; i++)
+                    {
+
+                        this.hand.landmarks[i] = Camera.main.ScreenToWorldPoint(new Vector3(
+                                Screen.width * this.hand.normalizedLandmarks[i].x,
+                                Screen.height * this.hand.normalizedLandmarks[i].y,
+                                this.depthEstimate.PredictDepth(this.hand.normalizedLandmarks[i].z)
+                            ));
 
 
-                if (!depth_estimate.Valid()) return null;
+                        Hand.mArrLandmarks[i] = new Vector3(
+                                Screen.width * this.hand.rawLandmarks[i].x,
+                                Screen.height * this.hand.rawLandmarks[i].y,
+                                Hand.scale * (this.hand.rawLandmarks[i].z + Hand.offset)
+                            );
 
-                // calculate projection ratio before estimating depth
-                depth_estimate.PredictZoomIndicator(hand_rect, this.hand.length_size);
+                        //Hand.m_landmarks[i] = Camera.main.ScreenToWorldPoint(
+                        //    new Vector3(
+                        //        Screen.width * this.hand.normalize_landmarks[i].x,
+                        //        Screen.height * this.hand.normalize_landmarks[i].y,
+                        //        Hand.scale * (this.hand.normalize_landmarks[i].z + Hand.offset)
+                        //    ));
+                    }
+                }
+                // Before any planes have been detected, default to ax + b
+                else
+                {
+                    for (int i = 0; i < 21; i++)
+                    {
 
-                for (int i = 0; i < 21; i++) {
+                        this.hand.landmarks[i] = Camera.main.ScreenToWorldPoint(new Vector3(
+                                Screen.width * this.hand.normalizedLandmarks[i].x,
+                                Screen.height * this.hand.normalizedLandmarks[i].y,
+                                //Hand.scale * this.hand.normalizedLandmarks[i].z + Hand.offset
+                                0.33f
 
-                    this.hand.landmarks[i] = Camera.main.ScreenToWorldPoint(new Vector3(
-                            Screen.width * this.hand.normalize_landmarks[i].x,
-                            Screen.height * this.hand.normalize_landmarks[i].y,
-                            this.depth_estimate.PredictDepth(this.hand.normalize_landmarks[i].z)
-                        ));
+                            ));
+
+                        Hand.mDebugText.text = "z: " + (Hand.scale * this.hand.normalizedLandmarks[i].z + Hand.offset);
 
 
-                    Hand.m_arr_landmarks[i] = new Vector3(
-                            Screen.width * this.hand.raw_landmarks[i].x,
-                            Screen.height * this.hand.raw_landmarks[i].y,
-                            Hand.scale * (this.hand.raw_landmarks[i].z + Hand.offset)
-                        );
-
-                    //Hand.m_landmarks[i] = Camera.main.ScreenToWorldPoint(
-                    //    new Vector3(
-                    //        Screen.width * this.hand.normalize_landmarks[i].x,
-                    //        Screen.height * this.hand.normalize_landmarks[i].y,
-                    //        Hand.scale * (this.hand.normalize_landmarks[i].z + Hand.offset)
-                    //    ));
+                        Hand.mArrLandmarks[i] = new Vector3(
+                                Screen.width * this.hand.rawLandmarks[i].x,
+                                Screen.height * this.hand.rawLandmarks[i].y,
+                                Hand.scale * (this.hand.rawLandmarks[i].z + Hand.offset)
+                            );
+                    }
                 }
 
                 this.hand.Position = this.hand.landmarks[0];

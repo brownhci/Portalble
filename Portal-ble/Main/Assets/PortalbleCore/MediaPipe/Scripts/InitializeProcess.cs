@@ -7,6 +7,8 @@ namespace Mediapipe.HandTracking
     public class InitializeProcess : MonoBehaviour
     {
         public ARCore.ARCoreDepthSetting depthSetting;
+        [SerializeField]
+        private GameObject process;
 
         // Start is called before the first frame update
         void Start()
@@ -17,6 +19,11 @@ namespace Mediapipe.HandTracking
 
         IEnumerator SetDepth()
         {
+            // Start process (i.e. start getting predictions), but default to
+            // depth = scale * z + offset
+            process.SetActive(true);
+
+            // Keep trying to get depth estimate
             while (true)
             {
                 yield return new WaitForSeconds(0.25f);

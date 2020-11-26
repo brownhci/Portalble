@@ -20,21 +20,23 @@ namespace Mediapipe.HandTracking.ARCore {
         }
 
         public void FixedUpdate() {
+            // Basically, if a plane has been detected update the current_distance variable
             if (raycast_manager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), out_hits, TrackableType.PlaneWithinPolygon))
             {
-                //if (raycast_manager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), out_hits, TrackableType.Planes))
-                //{
                  
                 current_pose = out_hits[0].pose;
-                current_distance = 0.5f;
+                current_distance = 0.5f; // If this is always 0.5f then we can just use a boolean??
                 //current_distance = out_hits[0].distance;
             }
         }
 
         public bool SetDepth() {
+            // If no plane has been detected...
             if (current_distance == default) return false;
+
+            // Otherwise once the plane has been detected, enable the depth estimate input and return
             depth_estimate.default_depth = current_distance;
-            base.EnableProcess();
+            base.EnableDepthInput();
             return true;
         }
     }
