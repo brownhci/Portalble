@@ -64,8 +64,11 @@ You should see message "HMD is all set" at the end of the log.
 - On newer versions of MacOS, you might experience issues with setting `$PATH`. If so, use `sudo gem install -n /usr/local/bin cocoapods`
 
 3.2 Go to the build folder, and run: `pod init`<br>
-3.3 Open Podfile (using any text editor)<br>
-3.4 Find the line "# Pods for Unity-iPhone", below it insert a **new line** `pod 'jetfire', '~> 0.1.5'`<br>
+3.3 Locate and open `Podfile` (using any text editor)<br>
+3.4 Find the line `# Pods for Unity-iPhone`, below it insert a **new line** `pod 'jetfire', '~> 0.1.5'`<br>
+- For newer versions of Xcode (12+), you will see a new section that starts with `target 'UnityFramework' do`, under which there is also a line `# Pods for Unity-iPhone`
+- Be sure to add `pod 'jetfire', '~> 0.1.5'` to both sections.
+- Also comment out `use_frameworks!` in both sections.
 - For more information about using Cocoapods, check out [this tutorial](https://guides.cocoapods.org/using/using-cocoapods).
 
 
